@@ -107,6 +107,25 @@
             "attribute_alias": "DATA_ADDRESS"
         }
     ],
+    "rows": [
+        {
+            "CREATED_ON": "2016-11-21 10:54:56",
+            "MODIFIED_ON": "2016-11-21 11:11:48",
+            "CREATED_BY_USER": "0x31000000000000000000000000000000",
+            "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
+            "UID": "0x11e6afd8efb4743f8943e4b318306b9a",
+            "DATA_SOURCE": "0x11e6afd8d2fa47e78943e4b318306b9a",
+            "long_description": null,
+            "APP": "0x11e6afcdf70406e78943e4b318306b9a",
+            "SHORT_DESCRIPTION": "",
+            "PARENT_OBJECT": "",
+            "DATA_ADDRESS_PROPS": "{}",
+            "DEFAULT_EDITOR_UXON": "{}",
+            "LABEL": "File base object",
+            "ALIAS": "FS_FOLDER",
+            "DATA_ADDRESS": ""
+        }
+    ],
     "totals_rows": [],
     "filters": {
         "operator": "AND",
