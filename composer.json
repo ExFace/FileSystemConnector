@@ -1,0 +1,29 @@
+{
+    "name": "ExFace/FileSystemConnector",
+    "description": "Data connector to use files and folders as data sources",
+    "type": "library",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Andrej Kabachnik",
+            "email": "kabachnik@gmail.com",
+            "role": "Creator"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/exface/FileSystemConnector/issues"
+    },
+    "require": {
+        "exface/core": "~0.1",
+        "wingu/reflection": "*",
+        "symfony/finder": "*"
+    },
+    "extra": {
+        "app": {
+            "app_uid": "0x11e6afcdf70406e78943e4b318306b9a",
+            "app_alias": "exface.FileSystemConnector",
+            "model_md5": "099f7646176e8d28f79235c7f5b8b98d",
+            "model_timestamp": "2016-11-21 09:36:24"
+        }
+    }
+}
