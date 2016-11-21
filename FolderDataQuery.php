@@ -1,6 +1,7 @@
 <?php namespace exface\FileSystemConnector;
 
 use exface\Core\CommonLogic\AbstractDataQuery;
+use exface\Core\CommonLogic\Filemanager;
 
 class FolderDataQuery extends AbstractDataQuery {
 	private $folders = array();
@@ -33,13 +34,14 @@ class FolderDataQuery extends AbstractDataQuery {
 	
 	public function get_base_path() {
 		if (is_null($this->base_path) && $this->get_query_builder()){
-			$this->base_path = $this->get_query_builder()->get_workbench()->filemanager()->get_path_to_base_folder();
+			$this->set_base_path($this->get_query_builder()->get_workbench()->filemanager()->get_path_to_base_folder());
 		}
 		return $this->base_path;
 	}
 	
 	public function set_base_path($value) {
-		$this->base_path = $value;
+		$this->base_path = Filemanager::normalize($value);
+		//$this->base_path = $value;
 		return $this;
 	}  
 	

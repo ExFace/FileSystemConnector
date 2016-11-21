@@ -4,6 +4,7 @@ use exface\Core\CommonLogic\QueryBuilder\AbstractQueryBuilder;
 use exface\Core\CommonLogic\AbstractDataConnector;
 use exface\Core\Exceptions\QueryBuilderException;
 use exface\FileSystemConnector\FolderDataQuery;
+use exface\Core\CommonLogic\Filemanager;
 
 /**
  * 
@@ -23,12 +24,30 @@ class FolderQueryBuilder extends AbstractQueryBuilder {
 	protected function build_query(){
 		$query = new FolderDataQuery($this);
 		
+		// Look for filters, that can be processed by the connector itself
+		foreach ($this->get_filters()->get_filters() as $qpart){
+			if ($qpart->get_attribute()->get_id() == $this->get_main_object()->get_uid_attribute()->get_id() 
+			&& ($qpart->get_comparator() == EXF_COMPARATOR_EQUALS || $qpart->get_comparator() == EXF_COMPARATOR_IN || $qpart->get_comparator() == EXF_COMPARATOR_IS)){
+				$path_pattern = ($this->get_main_object()->get_data_address_property('use_vendor_path_as_base') ? 'vendor/' : '') . $qpart->get_compare_value();
+				$path_pattern = Filemanager::normalize($path_pattern);
+			} elseif ($qpart->get_attribute()->get_id() == $this->get_main_object()->get_label_attribute()->get_id()){
+				switch ($qpart->get_comparator()){
+					case EXF_COMPARATOR_IS: $filename = '*' . $qpart->get_compare_value() . '*'; break;
+					default: //TODO
+				}
+			}
+		}
+		
 		// Setup query
-		$path_pattern = $this->get_main_object()->get_data_address();
+		$path_pattern = $path_pattern ? $path_pattern : $this->get_main_object()->get_data_address();
 		$last_slash_pos = mb_strripos($path_pattern, '/');
 		$path_relative = substr($path_pattern, 0, $last_slash_pos);
 		$path_absolute = $this->get_workbench()->filemanager()->get_path_to_base_folder() . DIRECTORY_SEPARATOR . $path_relative;
-		$filename = substr($path_pattern, ($last_slash_pos+1));
+		$filename = $filename ? $filename : substr($path_pattern, ($last_slash_pos+1));
+		
+		if ($this->get_main_object()->get_data_address_property('use_vendor_path_as_base') != false){
+			$query->set_base_path($this->get_workbench()->filemanager()->get_path_to_vendor_folder());
+		}
 		
 		$query->set_filename_pattern($filename);
 		$query->add_folder($path_absolute);

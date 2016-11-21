@@ -82,14 +82,14 @@
             "expression": "QUERYBUILDER",
             "name": "QUERYBUILDER",
             "hidden": false,
-            "data_type": "String",
+            "data_type": "Relation",
             "attribute_alias": "QUERYBUILDER"
         }
     ],
     "rows": [
         {
             "CREATED_ON": "2016-11-21 10:54:08",
-            "MODIFIED_ON": "2016-11-21 11:21:00",
+            "MODIFIED_ON": "2016-11-21 13:37:02",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11e6afd8d2fa47e78943e4b318306b9a",
@@ -99,7 +99,7 @@
             "READONLY": "0",
             "LABEL": "Local folder",
             "ALIAS": "FOCAL_FOLDER",
-            "QUERYBUILDER": "exface\\FileSystemConnector\\QueryBuilders\\FolderQueryBuilder.php"
+            "QUERYBUILDER": "exface\/FileSystemConnector\/QueryBuilders\/FolderQueryBuilder.php"
         }
     ],
     "totals_rows": [],

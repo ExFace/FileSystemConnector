@@ -54,7 +54,7 @@
             "expression": "CONNECTOR",
             "name": "CONNECTOR",
             "hidden": false,
-            "data_type": "String",
+            "data_type": "Relation",
             "attribute_alias": "CONNECTOR"
         },
         {
@@ -95,7 +95,7 @@
             "UID": "0x11e6afd88b5ffcd28943e4b318306b9a",
             "APP": "0x11e6afcdf70406e78943e4b318306b9a",
             "LABEL": "Local folders",
-            "CONNECTOR": "exface\\FileSystemConnector\\DataConnectors\\FolderConnector.php",
+            "CONNECTOR": "exface\/FileSystemConnector\/DataConnectors\/FolderConnector.php",
             "CONFIG": "{}",
             "READONLY": "0",
             "ALIAS": "LOCAL_FOLDERS",

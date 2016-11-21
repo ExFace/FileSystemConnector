@@ -4,6 +4,7 @@ use exface\Core\CommonLogic\AbstractDataConnectorWithoutTransactions;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use exface\FileSystemConnector\FolderDataQuery;
+use exface\Core\CommonLogic\Filemanager;
 
 class FolderConnector extends AbstractDataConnectorWithoutTransactions {
 	private $base_path = null;
@@ -51,15 +52,19 @@ class FolderConnector extends AbstractDataConnectorWithoutTransactions {
 	
 	protected function get_data_from_file(SplFileInfo $file, FolderDataQuery $query){
 		$row = array();
-		$base_path = $query->get_base_path();
-		var_dump($base_path);
+		
+		$base_path = $query->get_base_path() . '/';
+		$path = Filemanager::normalize($file->getPath());
+		$pathname = Filemanager::normalize($file->getPathname());
+		
 		$file_data = array(
-				'filename' => $file->getFilename(),
+				'filename' => $file->getExtension() ? str_replace('.' . $file->getExtension(), '', $file->getFilename()) : $file->getFilename(),
+				'filename_with_extension' => $file->getFilename(),
 				'extension' => $file->getExtension(),
 				'path' => $file->getPath(),
-				'path_relative' => $base_path ? str_replace($base_path, '', $file->getPath()) : $file->getRealPath(),
-				'pathname' => $file->getRealPath(),
-				'pathname_relative' => $base_path ? str_replace($base_path, '', $file->getRealPath()) : $file->getRealPath()
+				'path_relative' => $base_path ? str_replace($base_path, '', $path) : $path,
+				'pathname' => $file->getPathname(),
+				'pathname_relative' => $base_path ? str_replace($base_path, '', $pathname) : $pathname 
 		);
 		
 		foreach ($file_data as $property => $value){
