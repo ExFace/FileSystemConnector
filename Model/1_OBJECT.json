@@ -110,7 +110,7 @@
     "rows": [
         {
             "CREATED_ON": "2016-11-21 10:54:56",
-            "MODIFIED_ON": "2016-11-21 11:11:48",
+            "MODIFIED_ON": "2016-11-22 10:31:21",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11e6afd8efb4743f8943e4b318306b9a",
@@ -121,8 +121,8 @@
             "PARENT_OBJECT": "",
             "DATA_ADDRESS_PROPS": "{}",
             "DEFAULT_EDITOR_UXON": "{}",
-            "LABEL": "File base object",
-            "ALIAS": "FS_FOLDER",
+            "LABEL": "Source file base object",
+            "ALIAS": "SOURCE_FILE",
             "DATA_ADDRESS": ""
         }
     ],

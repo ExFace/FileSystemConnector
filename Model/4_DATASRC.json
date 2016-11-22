@@ -89,17 +89,31 @@
     "rows": [
         {
             "CREATED_ON": "2016-11-21 10:54:08",
-            "MODIFIED_ON": "2016-11-21 13:37:02",
+            "MODIFIED_ON": "2016-11-22 10:16:47",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11e6afd8d2fa47e78943e4b318306b9a",
             "APP": "0x11e6afcdf70406e78943e4b318306b9a",
+            "CONNECTION": "0x11e6b09c8ccac11d8943e4b318306b9a",
+            "BASE_OBJECT": "0x11e6afd8efb4743f8943e4b318306b9a",
+            "READONLY": "0",
+            "LABEL": "Local Vendor Folders",
+            "ALIAS": "LOCAL_VENDOR_FOLDERS",
+            "QUERYBUILDER": "exface\/FileSystemConnector\/QueryBuilders\/FileFinderBuilder.php"
+        },
+        {
+            "CREATED_ON": "2016-11-22 10:26:30",
+            "MODIFIED_ON": "2016-11-22 10:16:47",
+            "CREATED_BY_USER": "0x31000000000000000000000000000000",
+            "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
+            "UID": "0x11e6b09e2002641f8943e4b318306b9a",
+            "APP": "0x11e6afcdf70406e78943e4b318306b9a",
             "CONNECTION": "0x11e6afd88b5ffcd28943e4b318306b9a",
             "BASE_OBJECT": "0x11e6afd8efb4743f8943e4b318306b9a",
             "READONLY": "0",
-            "LABEL": "Local folder",
-            "ALIAS": "FOCAL_FOLDER",
-            "QUERYBUILDER": "exface\/FileSystemConnector\/QueryBuilders\/FolderQueryBuilder.php"
+            "LABEL": "Local Folders",
+            "ALIAS": "LOCAL_FOLDERS",
+            "QUERYBUILDER": "exface\/FileSystemConnector\/QueryBuilders\/FileFinderBuilder.php"
         }
     ],
     "totals_rows": [],

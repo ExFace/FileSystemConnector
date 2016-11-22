@@ -89,16 +89,30 @@
     "rows": [
         {
             "CREATED_ON": "2016-11-21 10:52:08",
-            "MODIFIED_ON": "2016-11-21 11:21:41",
+            "MODIFIED_ON": "2016-11-22 10:25:49",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11e6afd88b5ffcd28943e4b318306b9a",
             "APP": "0x11e6afcdf70406e78943e4b318306b9a",
-            "LABEL": "Local folders",
-            "CONNECTOR": "exface\/FileSystemConnector\/DataConnectors\/FolderConnector.php",
+            "LABEL": "Local Folders",
+            "CONNECTOR": "exface\/FileSystemConnector\/DataConnectors\/FileFinderConnector.php",
             "CONFIG": "{}",
             "READONLY": "0",
             "ALIAS": "LOCAL_FOLDERS",
+            "FILTER_CONTEXT": ""
+        },
+        {
+            "CREATED_ON": "2016-11-22 10:15:14",
+            "MODIFIED_ON": "2016-11-22 10:25:31",
+            "CREATED_BY_USER": "0x31000000000000000000000000000000",
+            "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
+            "UID": "0x11e6b09c8ccac11d8943e4b318306b9a",
+            "APP": "0x11e6afcdf70406e78943e4b318306b9a",
+            "LABEL": "Local Vendor Folders",
+            "CONNECTOR": "exface\/FileSystemConnector\/DataConnectors\/FileFinderConnector.php",
+            "CONFIG": "{\"use_vendor_folder_as_base\":\"1\"}",
+            "READONLY": "1",
+            "ALIAS": "LOCAL_VENDOR_FOLDERS",
             "FILTER_CONTEXT": ""
         }
     ],
