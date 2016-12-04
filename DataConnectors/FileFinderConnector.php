@@ -1,7 +1,6 @@
 <?php namespace exface\FileSystemConnector\DataConnectors;
 
 use exface\Core\CommonLogic\AbstractDataConnectorWithoutTransactions;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use exface\Core\CommonLogic\Filemanager;
 use exface\Core\Exceptions\DataConnectionError;
@@ -20,7 +19,7 @@ class FileFinderConnector extends AbstractDataConnectorWithoutTransactions {
 	protected function perform_connect() {
 		if (!is_null($this->get_config_value('base_path'))){
 			$this->set_base_path($this->get_workbench()->filemanager()->get_path_to_base_folder());
-		} elseif ($this->get_config_value('use_vendor_foler_as_base') != false){
+		} elseif ($this->get_config_value('use_vendor_folder_as_base') != false){
 			$this->set_base_path($this->get_workbench()->filemanager()->get_path_to_vendor_folder());
 		} else {
 			$this->set_base_path($this->get_config_value('base_path'));
@@ -48,6 +47,7 @@ class FileFinderConnector extends AbstractDataConnectorWithoutTransactions {
 		if (!($query instanceof FileFinderDataQuery)) throw new DataConnectionError('DataConnector "' . $this->get_alias_with_namespace() . '" expects an instance of FileFinderDataQuery as query, "' . get_class($query) . '" given instead!');
 		
 		$paths = array();
+		// Prepare an array of absolut paths to search in
 		foreach ($query->getFolders() as $path){
 			if (!Filemanager::path_is_absolute($path)){
 				$paths[] = Filemanager::path_join(array($this->get_base_path(), $path));
@@ -56,10 +56,18 @@ class FileFinderConnector extends AbstractDataConnectorWithoutTransactions {
 			}
 		}
 		
+		// If the query does not have a base path, use the base path of the connection
+		if (!$query->getBasePath()){
+			$query->setBasePath($this->get_base_path());
+		}
+		
+		// If no paths could be found anywhere (= the query object did not have any folders defined), use the base path
 		if (count($paths) == 0){
 			$paths[] = $query->getBasePath();
 		}
 		
+		// Perform the search. This will fill the file and folder iterators in the finder instance. Thus, the resulting
+		// files will be available through foreach($query as $splFileInfo) etc.
 		try {
 			$query->in($paths);
 		} catch (\Exception $e){

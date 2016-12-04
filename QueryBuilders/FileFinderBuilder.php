@@ -30,7 +30,7 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		foreach ($this->get_filters()->get_filters() as $qpart){
 			if ($qpart->get_attribute()->get_id() == $this->get_main_object()->get_uid_attribute()->get_id() 
 			&& ($qpart->get_comparator() == EXF_COMPARATOR_EQUALS || $qpart->get_comparator() == EXF_COMPARATOR_IN || $qpart->get_comparator() == EXF_COMPARATOR_IS)){
-				$path_pattern = ($this->get_main_object()->get_data_address_property('use_vendor_path_as_base') ? 'vendor/' : '') . $qpart->get_compare_value();
+				$path_pattern = $qpart->get_compare_value();
 				$path_pattern = Filemanager::path_normalize($path_pattern);
 			} elseif ($qpart->get_attribute()->get_id() == $this->get_main_object()->get_label_attribute()->get_id()){
 				switch ($qpart->get_comparator()){
@@ -44,15 +44,10 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		$path_pattern = $path_pattern ? $path_pattern : $this->get_main_object()->get_data_address();
 		$last_slash_pos = mb_strripos($path_pattern, '/');
 		$path_relative = substr($path_pattern, 0, $last_slash_pos);
-		$path_absolute = $this->get_workbench()->filemanager()->get_path_to_base_folder() . DIRECTORY_SEPARATOR . $path_relative;
 		$filename = $filename ? $filename : substr($path_pattern, ($last_slash_pos+1));
 		
-		if ($this->get_main_object()->get_data_address_property('use_vendor_path_as_base') != false){
-			$query->setBasePath($this->get_workbench()->filemanager()->get_path_to_vendor_folder());
-		}
-		
 		$query->name($filename);
-		$query->addFolder($path_absolute);
+		$query->addFolder($path_relative);
 		
 		return $query;
 	}
@@ -208,10 +203,10 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 	}
 	
 	protected function get_data_from_file(SplFileInfo $file, FileFinderDataQuery $query){
-		$base_path = $query->getBasePath() . '/';
+		$base_path = $query->getBasePath() ? $query->getBasePath() . '/' : '';
 		$path = Filemanager::path_normalize($file->getPath());
 		$pathname = Filemanager::path_normalize($file->getPathname());
-	
+		
 		$file_data = array(
 				'name' => $file->getExtension() ? str_replace('.' . $file->getExtension(), '', $file->getFilename()) : $file->getFilename(),
 				'path_relative' => $base_path ? str_replace($base_path, '', $path) : $path,
