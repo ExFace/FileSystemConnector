@@ -6,6 +6,7 @@ use exface\Core\Exceptions\QueryBuilderException;
 use exface\Core\CommonLogic\Filemanager;
 use exface\FileSystemConnector\FileFinderDataQuery;
 use Symfony\Component\Finder\SplFileInfo;
+use exface\Core\CommonLogic\QueryBuilder\RowDataArraySorter;
 
 /**
  * 
@@ -20,7 +21,7 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 	
 	/**
 	 * 
-	 * @return \exface\FileSystemConnector\FolderDataQuery
+	 * @return FileFinderDataQuery
 	 */
 	protected function build_query(){
 		$query = new FileFinderDataQuery();
@@ -45,6 +46,10 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		$last_slash_pos = mb_strripos($path_pattern, '/');
 		$path_relative = substr($path_pattern, 0, $last_slash_pos);
 		$filename = $filename ? $filename : substr($path_pattern, ($last_slash_pos+1));
+		
+		if (count($this->get_sorters()) > 0){
+			$query->setFullScanRequired(true);
+		}
 		
 		$query->name($filename);
 		$query->addFolder($path_relative);
@@ -165,16 +170,25 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		}
 		
 		$query = $this->build_query();
-		if ($files = $data_connection->query($query)){			
+		if ($files = $data_connection->query($query)){	
+			$rownr = -1;
+			$this->set_result_total_rows(count($files));
 			foreach ($files as $file){
+				$rownr++;
+				// Skip rows, that are positioned below the offset
+				if (!$query->getFullScanRequired() && $rownr < $this->get_offset()) continue;
+				// Skip rest if we are over the limit
+				if (!$query->getFullScanRequired() && $this->get_limit() > 0 && $rownr >= $this->get_offset() + $this->get_limit()) break;
+				// Otherwise add the file data to the result rows
 				$result_rows[] = $this->build_result_row($file, $query);
 			}
 			$result_rows = $this->apply_filters_to_result_rows($result_rows);
+			$result_rows = $this->sort_rows($result_rows);
 		}
 	
 		if (!$this->get_result_total_rows()){
 			$this->set_result_total_rows(count($result_rows));
-		}
+		}		
 		
 		$this->set_result_rows($result_rows);
 		return $this->get_result_total_rows();
@@ -215,6 +229,14 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		);
 	
 		return $file_data;
+	}
+	
+	protected function sort_rows(array $row_array){
+		$sorter = new RowDataArraySorter();
+		foreach ($this->get_sorters() as $qpart){
+			$sorter->addCriteria($qpart->get_alias(), $qpart->get_order());
+		}
+		return $sorter->sort($row_array);
 	}
 }
 ?>

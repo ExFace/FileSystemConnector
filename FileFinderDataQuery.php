@@ -9,6 +9,7 @@ class FileFinderDataQuery extends Finder implements DataQueryInterface {
 	private $folders = array();
 	private $basePath = null;
 	private $query_builder = null;
+	private $fullScanRequired = false;
 	
 	public function getFolders() {
 		return $this->folders;
@@ -33,17 +34,33 @@ class FileFinderDataQuery extends Finder implements DataQueryInterface {
 		return $this;
 	} 
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \exface\Core\Interfaces\DataSources\DataQueryInterface::get_query_builder()
+	 */
 	public function get_query_builder() {
 		return $this->query_builder;
 	}
 	
+	/**
+	 * 
+	 * @param AbstractQueryBuilder $value
+	 * @return \exface\FileSystemConnector\FileFinderDataQuery
+	 */
 	public function set_query_builder(AbstractQueryBuilder $value) {
 		$this->query_builder = $value;
 		return $this;
 	}
 	
-	  
-	  
+	public function setFullScanRequired($value){
+		$this->fullScanRequired = $value ? true : false;
+		return $this;
+	}
+	
+	public function getFullScanRequired(){
+		return $this->fullScanRequired;
+	}
 	
 }
 ?>
