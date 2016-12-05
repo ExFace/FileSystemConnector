@@ -2,11 +2,9 @@
 
 use exface\Core\CommonLogic\QueryBuilder\AbstractQueryBuilder;
 use exface\Core\CommonLogic\AbstractDataConnector;
-use exface\Core\Exceptions\QueryBuilderException;
 use exface\Core\CommonLogic\Filemanager;
 use exface\FileSystemConnector\FileFinderDataQuery;
 use Symfony\Component\Finder\SplFileInfo;
-use exface\Core\CommonLogic\QueryBuilder\RowDataArraySorter;
 
 /**
  * 
@@ -38,6 +36,9 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 					case EXF_COMPARATOR_IS: $filename = '/.*' . preg_quote($qpart->get_compare_value()) . './i'; break;
 					default: //TODO
 				}
+			} else {
+				$qpart->set_apply_after_reading(true);
+				$query->setFullScanRequired(true);
 			}
 		}
 		
@@ -84,80 +85,6 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		return $this;
 	}
 	
-	protected function apply_filters_to_result_rows($result_rows){
-		if (!is_array($result_rows)){
-			return $result_rows;
-		}
-		// Apply filters
-		foreach ($this->get_filters()->get_filters() as $qpart){
-			if (!$qpart->get_data_address_property('filter_localy')) continue;
-			/* @var $qpart \exface\Core\CommonLogic\QueryBuilder\QueryPartFilter */
-			foreach ($result_rows as $rownr => $row){
-				// TODO make filtering depend on data types and comparators. A central filtering method for
-				// tabular data sets is probably a good idea.
-				switch ($qpart->get_comparator()){
-					case EXF_COMPARATOR_IN:
-						$match = false;
-						$row_val = $row[$qpart->get_alias()];
-						foreach (explode(',', $qpart->get_compare_value()) as $val){
-							$val = trim($val);
-							if (strcasecmp($row_val, $val) === 0) {
-								$match = true;
-								break;
-							}
-						}
-						if (!$match){
-							unset($result_rows[$rownr]);
-						}
-						break;
-					case EXF_COMPARATOR_EQUALS:
-						if (strcasecmp($row[$qpart->get_alias()], $qpart->get_compare_value()) !== 0) {
-							unset($result_rows[$rownr]);
-						}
-						break;
-					case EXF_COMPARATOR_EQUALS_NOT:
-						if (strcasecmp($row[$qpart->get_alias()], $qpart->get_compare_value()) === 0) {
-							unset($result_rows[$rownr]);
-						}
-						break;
-					case EXF_COMPARATOR_IS:
-						if (stripos($row[$qpart->get_alias()], $qpart->get_compare_value()) === false) {
-							unset($result_rows[$rownr]);
-						}
-						break;
-					case EXF_COMPARATOR_IS_NOT:
-						if (stripos($row[$qpart->get_alias()], $qpart->get_compare_value()) !== false) {
-							unset($result_rows[$rownr]);
-						}
-						break;
-					case EXF_COMPARATOR_GREATER_THAN:
-						if ($row[$qpart->get_alias()] < $qpart->get_compare_value()) {
-							unset($result_rows[$rownr]);
-						}
-						break;
-					case EXF_COMPARATOR_GREATER_THAN_OR_EQUALS:
-							if ($row[$qpart->get_alias()] <= $qpart->get_compare_value()) {
-								unset($result_rows[$rownr]);
-							}
-						break;
-					case EXF_COMPARATOR_LESS_THAN:
-						if ($row[$qpart->get_alias()] > $qpart->get_compare_value()) {
-							unset($result_rows[$rownr]);
-						}
-						break;
-					case EXF_COMPARATOR_LESS_THAN_OR_EQUALS:
-						if ($row[$qpart->get_alias()] >= $qpart->get_compare_value()) {
-							unset($result_rows[$rownr]);
-						}
-						break;
-					default: 
-						throw new QueryBuilderException('The filter comparator "' . $qpart->get_comparator() . '" is not supported by the QueryBuilder "' . get_class($this) . '"!');
-				}
-			}
-		}
-		return $result_rows;
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \exface\Core\CommonLogic\QueryBuilder\AbstractQueryBuilder::read()
@@ -174,16 +101,20 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 			$rownr = -1;
 			$this->set_result_total_rows(count($files));
 			foreach ($files as $file){
-				$rownr++;
-				// Skip rows, that are positioned below the offset
-				if (!$query->getFullScanRequired() && $rownr < $this->get_offset()) continue;
-				// Skip rest if we are over the limit
-				if (!$query->getFullScanRequired() && $this->get_limit() > 0 && $rownr >= $this->get_offset() + $this->get_limit()) break;
+				// If no full scan is required, apply pagination right away, so we do not even need to reed the files not being shown
+				if (!$query->getFullScanRequired()){
+					$rownr++;
+					// Skip rows, that are positioned below the offset
+					if (!$query->getFullScanRequired() && $rownr < $this->get_offset()) continue;
+					// Skip rest if we are over the limit
+					if (!$query->getFullScanRequired() && $this->get_limit() > 0 && $rownr >= $this->get_offset() + $this->get_limit()) break;
+				}
 				// Otherwise add the file data to the result rows
 				$result_rows[] = $this->build_result_row($file, $query);
 			}
-			$result_rows = $this->apply_filters_to_result_rows($result_rows);
-			$result_rows = $this->sort_rows($result_rows);
+			$result_rows = $this->apply_filters($result_rows);
+			$result_rows = $this->apply_sorting($result_rows);
+			$result_rows = $this->apply_pagination($result_rows);
 		}
 	
 		if (!$this->get_result_total_rows()){
@@ -230,13 +161,6 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 	
 		return $file_data;
 	}
-	
-	protected function sort_rows(array $row_array){
-		$sorter = new RowDataArraySorter();
-		foreach ($this->get_sorters() as $qpart){
-			$sorter->addCriteria($qpart->get_alias(), $qpart->get_order());
-		}
-		return $sorter->sort($row_array);
-	}
+
 }
 ?>
