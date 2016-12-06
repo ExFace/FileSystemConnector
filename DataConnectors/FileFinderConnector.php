@@ -1,15 +1,13 @@
 <?php namespace exface\FileSystemConnector\DataConnectors;
 
-use exface\Core\CommonLogic\AbstractDataConnectorWithoutTransactions;
 use Symfony\Component\Finder\SplFileInfo;
 use exface\Core\CommonLogic\Filemanager;
 use exface\Core\Exceptions\DataConnectionError;
 use exface\FileSystemConnector\FileFinderDataQuery;
+use exface\Core\DataConnectors\TransparentConnector;
 
-class FileFinderConnector extends AbstractDataConnectorWithoutTransactions {
+class FileFinderConnector extends TransparentConnector {
 	private $base_path = null;
-	
-	protected $last_error = null;
 	
 	/**
 	 * 
@@ -25,17 +23,7 @@ class FileFinderConnector extends AbstractDataConnectorWithoutTransactions {
 			$this->set_base_path($this->get_config_value('base_path'));
 		}
 		return;
-	}
-	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see \exface\Core\CommonLogic\AbstractDataConnector::perform_disconnect()
-	 */
-	protected function perform_disconnect() {
-		return;
-	}
-	
+	}	
 
 	/**
 	 * 
@@ -76,31 +64,6 @@ class FileFinderConnector extends AbstractDataConnectorWithoutTransactions {
 		}
 		
 		return $query;
-	}
-
-	function get_insert_id() {
-		// TODO
-		return 0;
-	}
-
-	/**
-	 * @name:  get_affected_rows_count
-	 *
-	 */
-	function get_affected_rows_count() {
-		// TODO
-		return 0;
-	}
-
-	/**
-	 * @name:  get_last_error
-	 *
-	 */
-	function get_last_error() {
-		if ($this->last_request){
-			$error = "Status code " . $this->last_request->getStatusCode() . "\n" . $this->last_request->getBody();
-		}
-		return $error;
 	}
 	  
 	public function get_base_path() {

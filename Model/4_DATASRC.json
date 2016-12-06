@@ -114,6 +114,20 @@
             "LABEL": "Local Folders",
             "ALIAS": "LOCAL_FOLDERS",
             "QUERYBUILDER": "exface\/FileSystemConnector\/QueryBuilders\/FileFinderBuilder.php"
+        },
+        {
+            "CREATED_ON": "2016-12-06 15:19:26",
+            "MODIFIED_ON": "2016-12-06 15:33:45",
+            "CREATED_BY_USER": "0x31000000000000000000000000000000",
+            "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
+            "UID": "0x11e6bbc75f27b3a29ee0e4b318306b9a",
+            "APP": "0x11e6afcdf70406e78943e4b318306b9a",
+            "CONNECTION": "0x11e6bbc738b084ae9ee0e4b318306b9a",
+            "BASE_OBJECT": "0x11e6bae2326c99b59ee0e4b318306b9a",
+            "READONLY": "0",
+            "LABEL": "PHP Annotations",
+            "ALIAS": "PHP_ANNOTATIONS",
+            "QUERYBUILDER": "exface\/FileSystemConnector\/QueryBuilders\/PhpAnnotationsReader.php"
         }
     ],
     "totals_rows": [],

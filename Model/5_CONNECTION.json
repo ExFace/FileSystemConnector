@@ -114,6 +114,20 @@
             "READONLY": "1",
             "ALIAS": "LOCAL_VENDOR_FOLDERS",
             "FILTER_CONTEXT": ""
+        },
+        {
+            "CREATED_ON": "2016-12-06 15:18:21",
+            "MODIFIED_ON": "2016-11-22 10:25:31",
+            "CREATED_BY_USER": "0x31000000000000000000000000000000",
+            "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
+            "UID": "0x11e6bbc738b084ae9ee0e4b318306b9a",
+            "APP": "0x11e6afcdf70406e78943e4b318306b9a",
+            "LABEL": "PHP Annotations",
+            "CONNECTOR": "exface\/FileSystemConnector\/DataConnectors\/PhpAnnotationsConnector.php",
+            "CONFIG": "{}",
+            "READONLY": "1",
+            "ALIAS": "PHP_ANNOTATIONS",
+            "FILTER_CONTEXT": ""
         }
     ],
     "totals_rows": [],
