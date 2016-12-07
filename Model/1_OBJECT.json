@@ -127,7 +127,7 @@
         },
         {
             "CREATED_ON": "2016-12-05 11:58:55",
-            "MODIFIED_ON": "2016-12-06 15:37:52",
+            "MODIFIED_ON": "2016-12-07 11:49:33",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11e6bae2326c99b59ee0e4b318306b9a",
@@ -138,8 +138,8 @@
             "PARENT_OBJECT": "",
             "DATA_ADDRESS_PROPS": "{}",
             "DEFAULT_EDITOR_UXON": "{}",
-            "LABEL": "UXON annotations base object",
-            "ALIAS": "ANNOTATION",
+            "LABEL": "PHP annotation base object",
+            "ALIAS": "PHP_ANNOTATION",
             "DATA_ADDRESS": "[#FILE#]"
         }
     ],
