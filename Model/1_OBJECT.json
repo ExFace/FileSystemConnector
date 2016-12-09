@@ -127,7 +127,7 @@
         },
         {
             "CREATED_ON": "2016-12-05 11:58:55",
-            "MODIFIED_ON": "2016-12-07 11:49:33",
+            "MODIFIED_ON": "2016-12-09 12:18:25",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11e6bae2326c99b59ee0e4b318306b9a",
@@ -136,7 +136,7 @@
             "APP": "0x11e6afcdf70406e78943e4b318306b9a",
             "SHORT_DESCRIPTION": "",
             "PARENT_OBJECT": "",
-            "DATA_ADDRESS_PROPS": "{}",
+            "DATA_ADDRESS_PROPS": "{\"annotation_level\":\"class\"}",
             "DEFAULT_EDITOR_UXON": "{}",
             "LABEL": "PHP annotation base object",
             "ALIAS": "PHP_ANNOTATION",
