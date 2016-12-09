@@ -52,7 +52,7 @@ class PhpAnnotationsDataQuery extends FileContentsDataQuery {
 			if (feof($fp)) break;
 	
 			$buffer .= fread($fp, 512);
-			$tokens = token_get_all($buffer);
+			$tokens = @token_get_all($buffer);
 	
 			if (strpos($buffer, '{') === false) continue;
 	
@@ -75,7 +75,7 @@ class PhpAnnotationsDataQuery extends FileContentsDataQuery {
 					}
 				}
 			}
-		}
+		}		
 		return $namespace . '\\' . $class;
 	}
 		
