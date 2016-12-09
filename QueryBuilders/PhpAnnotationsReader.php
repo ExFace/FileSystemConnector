@@ -159,9 +159,17 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 				
 				// If we are specificlally interesten in the class annotations, search for fields
 				// in the class comment specifically
-				if ($this->get_annotation_level() == $this::ANNOTATION_LEVEL_CLASS && $comment = $class->getReflectionDocComment()){
-					$row = $this->build_row_from_comment_tags($class, $comment, $row);
-					$row = $this->build_row_from_comment($class, $comment, $row);
+				if ($this->get_annotation_level() == $this::ANNOTATION_LEVEL_CLASS){
+					if ($comment = $class->getReflectionDocComment()){
+						$row = $this->build_row_from_comment_tags($class, $comment, $row);
+						$row = $this->build_row_from_comment($class, $comment, $row);
+					}
+					// Add the FQSEN (Fully Qualified Structural Element Name) if we are on class level
+					foreach ($this->get_attributes_missing_in_row($row) as $qpart){
+						if (strcasecmp($qpart->get_data_address(), 'FQSEN')){
+							$row[$qpart->get_alias()] = $class->getName();
+						}
+					}
 				}
 			}
 		}
@@ -211,6 +219,12 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 		if (!$this->get_ignore_comments_without_matching_tags() || count($row) > 0){
 			$row = $this->build_row_from_class($class, $row);
 			$row = $this->build_row_from_comment($class, $comment, $row);
+			// Add the FQSEN (Fully Qualified Structural Element Name) if we are on method level
+			foreach ($this->get_attributes_missing_in_row($row) as $qpart){
+				if (strcasecmp($qpart->get_data_address(),'fqsen')){
+					$row[$qpart->get_alias()] = $class->getName() . '::' . $method->getName() . '()';
+				}
+			}
 		}
 	
 		return $row;
