@@ -5,6 +5,7 @@ use exface\Core\CommonLogic\Filemanager;
 use exface\Core\Exceptions\DataConnectionError;
 use exface\FileSystemConnector\FileFinderDataQuery;
 use exface\Core\DataConnectors\TransparentConnector;
+use exface\Core\Interfaces\DataSources\DataQueryInterface;
 
 class FileFinderConnector extends TransparentConnector {
 	private $base_path = null;
@@ -31,7 +32,7 @@ class FileFinderConnector extends TransparentConnector {
 	 * @see \exface\Core\CommonLogic\AbstractDataConnector::perform_query()
 	 * @return \SplFileInfo[]
 	 */
-	protected function perform_query($query, $options = null) {
+	protected function perform_query(DataQueryInterface $query) {
 		if (!($query instanceof FileFinderDataQuery)) throw new DataConnectionError('DataConnector "' . $this->get_alias_with_namespace() . '" expects an instance of FileFinderDataQuery as query, "' . get_class($query) . '" given instead!');
 		
 		$paths = array();
