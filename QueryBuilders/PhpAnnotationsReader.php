@@ -35,13 +35,14 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 	 * @return PhpAnnotationsDataQuery
 	 */
 	protected function build_query(){
-		$query = new PhpAnnotationsDataQuery($this);
+		$query = new PhpAnnotationsDataQuery();
+		$query->set_base_path($this->get_workbench()->filemanager()->get_path_to_vendor_folder());
 		
 		// Look for filters, that can be processed by the connector itself
 		foreach ($this->get_filters()->get_filters() as $qpart){
 			switch ($qpart->get_attribute()->get_data_address()){
-				case 'filename-relative': $query->set_file_path_relative($qpart->get_compare_value()); break;
-				case 'filename': $query->set_file_path_absolute($qpart->get_compare_value()); break;
+				case 'filename-relative': $query->set_path_relative($qpart->get_compare_value()); break;
+				case 'filename': $query->set_path_absolute($qpart->get_compare_value()); break;
 				case 'class': $query->set_class_name_with_namespace($qpart->get_compare_value()); break;
 				default: $qpart->set_apply_after_reading(true);
 			}
@@ -96,7 +97,7 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 		
 		$query = $this->build_query();
 		/* @var $class \Wingu\OctopusCore\Reflection\ReflectionClass */
-		if ($class = $data_connection->query($query)){
+		if ($class = $data_connection->query($query)->get_reflection_class()){
 			// Read method annotations
 			if (!$annotation_level || $annotation_level == $this::ANNOTATION_LEVEL_CLASS){
 				$row = $this->build_row_from_class($class, array());

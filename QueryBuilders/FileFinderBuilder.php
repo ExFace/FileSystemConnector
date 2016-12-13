@@ -23,7 +23,6 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 	 */
 	protected function build_query(){
 		$query = new FileFinderDataQuery();
-		$query->set_query_builder($this);
 		
 		// Look for filters, that can be processed by the connector itself
 		foreach ($this->get_filters()->get_filters() as $qpart){
