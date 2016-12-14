@@ -2,43 +2,55 @@
 
 use exface\Core\CommonLogic\Filemanager;
 use Symfony\Component\Finder\Finder;
-use exface\Core\Interfaces\DataSources\DataQueryInterface;
+use exface\Core\CommonLogic\AbstractDataQuery;
 
-class FileFinderDataQuery extends Finder implements DataQueryInterface {
+class FileFinderDataQuery extends AbstractDataQuery {
 	private $folders = array();
 	private $basePath = null;
 	private $query_builder = null;
 	private $fullScanRequired = false;
+	private $finder = null;
 	
-	public function getFolders() {
+	/**
+	 * 
+	 * @return \Symfony\Component\Finder\Finder
+	 */
+	public function get_finder(){
+		if (is_null($this->finder)){
+			$this->finder = new Finder();
+		}
+		return $this->finder;
+	}
+	
+	public function get_folders() {
 		return $this->folders;
 	}
 	
-	public function setFolders(array $patternArray) {
+	public function set_folders(array $patternArray) {
 		$this->folders = $patternArray;
 		return $this;
 	}
 	
-	public function addFolder($relativeOrAbsolutePath){
+	public function add_folder($relativeOrAbsolutePath){
 		$this->folders[] = $relativeOrAbsolutePath;
 		return $this;
 	}
 	
-	public function getBasePath() {
+	public function get_base_path() {
 		return $this->basePath;
 	}
 	
-	public function setBasePath($absolutePath) {
+	public function set_base_path($absolutePath) {
 		$this->basePath = Filemanager::path_normalize($absolutePath);
 		return $this;
 	} 
 	
-	public function setFullScanRequired($value){
+	public function set_full_scan_required($value){
 		$this->fullScanRequired = $value ? true : false;
 		return $this;
 	}
 	
-	public function getFullScanRequired(){
+	public function get_full_scan_required(){
 		return $this->fullScanRequired;
 	}
 	

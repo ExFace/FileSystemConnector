@@ -37,7 +37,7 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 				}
 			} else {
 				$qpart->set_apply_after_reading(true);
-				$query->setFullScanRequired(true);
+				$query->set_full_scan_required(true);
 			}
 		}
 		
@@ -48,11 +48,11 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		$filename = $filename ? $filename : substr($path_pattern, ($last_slash_pos+1));
 		
 		if (count($this->get_sorters()) > 0){
-			$query->setFullScanRequired(true);
+			$query->set_full_scan_required(true);
 		}
 		
-		$query->name($filename);
-		$query->addFolder($path_relative);
+		$query->get_finder()->name($filename);
+		$query->add_folder($path_relative);
 		
 		return $query;
 	}
@@ -96,17 +96,17 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		}
 		
 		$query = $this->build_query();
-		if ($files = $data_connection->query($query)){	
+		if ($files = $data_connection->query($query)->get_finder()){	
 			$rownr = -1;
 			$this->set_result_total_rows(count($files));
 			foreach ($files as $file){
 				// If no full scan is required, apply pagination right away, so we do not even need to reed the files not being shown
-				if (!$query->getFullScanRequired()){
+				if (!$query->get_full_scan_required()){
 					$rownr++;
 					// Skip rows, that are positioned below the offset
-					if (!$query->getFullScanRequired() && $rownr < $this->get_offset()) continue;
+					if (!$query->get_full_scan_required() && $rownr < $this->get_offset()) continue;
 					// Skip rest if we are over the limit
-					if (!$query->getFullScanRequired() && $this->get_limit() > 0 && $rownr >= $this->get_offset() + $this->get_limit()) break;
+					if (!$query->get_full_scan_required() && $this->get_limit() > 0 && $rownr >= $this->get_offset() + $this->get_limit()) break;
 				}
 				// Otherwise add the file data to the result rows
 				$result_rows[] = $this->build_result_row($file, $query);
@@ -147,7 +147,7 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 	}
 	
 	protected function get_data_from_file(SplFileInfo $file, FileFinderDataQuery $query){
-		$base_path = $query->getBasePath() ? $query->getBasePath() . '/' : '';
+		$base_path = $query->get_base_path() ? $query->get_base_path() . '/' : '';
 		$path = Filemanager::path_normalize($file->getPath());
 		$pathname = Filemanager::path_normalize($file->getPathname());
 		

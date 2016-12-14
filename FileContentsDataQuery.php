@@ -1,9 +1,9 @@
 <?php namespace exface\FileSystemConnector;
 
-use exface\Core\Interfaces\DataSources\DataQueryInterface;
 use exface\Core\CommonLogic\Filemanager;
+use exface\Core\CommonLogic\AbstractDataQuery;
 
-class FileContentsDataQuery implements DataQueryInterface {
+class FileContentsDataQuery extends AbstractDataQuery {
 	
 	private $base_path = null;
 	private $path_absolute = null;

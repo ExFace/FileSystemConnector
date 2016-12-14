@@ -1,6 +1,5 @@
 <?php namespace exface\FileSystemConnector\DataConnectors;
 
-use Symfony\Component\Finder\SplFileInfo;
 use exface\Core\CommonLogic\Filemanager;
 use exface\Core\Exceptions\DataConnectionError;
 use exface\FileSystemConnector\FileFinderDataQuery;
@@ -30,14 +29,16 @@ class FileFinderConnector extends TransparentConnector {
 	 * 
 	 * {@inheritDoc}
 	 * @see \exface\Core\CommonLogic\AbstractDataConnector::perform_query()
-	 * @return \SplFileInfo[]
+	 * 
+	 * @param FileFinderDataQuery
+	 * @return FileFinderDataQuery
 	 */
 	protected function perform_query(DataQueryInterface $query) {
 		if (!($query instanceof FileFinderDataQuery)) throw new DataConnectionError('DataConnector "' . $this->get_alias_with_namespace() . '" expects an instance of FileFinderDataQuery as query, "' . get_class($query) . '" given instead!');
 		
 		$paths = array();
 		// Prepare an array of absolut paths to search in
-		foreach ($query->getFolders() as $path){
+		foreach ($query->get_folders() as $path){
 			if (!Filemanager::path_is_absolute($path)){
 				$paths[] = Filemanager::path_join(array($this->get_base_path(), $path));
 			} else {
@@ -46,19 +47,19 @@ class FileFinderConnector extends TransparentConnector {
 		}
 		
 		// If the query does not have a base path, use the base path of the connection
-		if (!$query->getBasePath()){
-			$query->setBasePath($this->get_base_path());
+		if (!$query->get_base_path()){
+			$query->set_base_path($this->get_base_path());
 		}
 		
 		// If no paths could be found anywhere (= the query object did not have any folders defined), use the base path
 		if (count($paths) == 0){
-			$paths[] = $query->getBasePath();
+			$paths[] = $query->get_base_path();
 		}
 		
 		// Perform the search. This will fill the file and folder iterators in the finder instance. Thus, the resulting
 		// files will be available through foreach($query as $splFileInfo) etc.
 		try {
-			$query->in($paths);
+			$query->get_finder()->in($paths);
 		} catch (\Exception $e){
 			throw new DataConnectionError("Data query failed!", null, $e);
 			return array();
