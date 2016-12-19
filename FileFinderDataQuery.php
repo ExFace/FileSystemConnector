@@ -41,7 +41,9 @@ class FileFinderDataQuery extends AbstractDataQuery {
 	}
 	
 	public function set_base_path($absolutePath) {
-		$this->basePath = Filemanager::path_normalize($absolutePath);
+		if (!is_null($absolutePath)){
+			$this->basePath = Filemanager::path_normalize($absolutePath);
+		}
 		return $this;
 	} 
 	

@@ -49,7 +49,7 @@ class PhpAnnotationsDataQuery extends FileContentsDataQuery {
 		while (!$class) {
 			if (feof($fp)) break;
 	
-			$buffer .= fread($fp, 512);
+			$buffer .= fread($fp, 1024);
 			$tokens = @token_get_all($buffer);
 	
 			if (strpos($buffer, '{') === false) continue;
