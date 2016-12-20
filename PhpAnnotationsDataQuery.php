@@ -49,8 +49,13 @@ class PhpAnnotationsDataQuery extends FileContentsDataQuery {
 		while (!$class) {
 			if (feof($fp)) break;
 	
-			$buffer .= fread($fp, 1024);
-			$tokens = @token_get_all($buffer);
+			$buffer .= fread($fp, 512);
+			try {
+				$tokens = @token_get_all($buffer);
+			} catch (\ErrorException $e) {
+				// Ignore errors of the tokenizer. Most of the errors will result from partial reading, when the read portion
+				// of the code does not make sense to the tokenizer (e.g. unclosed comments, etc.)
+			}
 	
 			if (strpos($buffer, '{') === false) continue;
 	
