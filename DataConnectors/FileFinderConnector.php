@@ -1,10 +1,11 @@
 <?php namespace exface\FileSystemConnector\DataConnectors;
 
 use exface\Core\CommonLogic\Filemanager;
-use exface\Core\Exceptions\DataConnectionError;
 use exface\FileSystemConnector\FileFinderDataQuery;
 use exface\Core\DataConnectors\TransparentConnector;
 use exface\Core\Interfaces\DataSources\DataQueryInterface;
+use exface\Core\Exceptions\DataSources\DataConnectionQueryTypeError;
+use exface\Core\Exceptions\DataSources\DataQueryFailedError;
 
 class FileFinderConnector extends TransparentConnector {
 	private $base_path = null;
@@ -33,7 +34,7 @@ class FileFinderConnector extends TransparentConnector {
 	 * @return FileFinderDataQuery
 	 */
 	protected function perform_query(DataQueryInterface $query) {
-		if (!($query instanceof FileFinderDataQuery)) throw new DataConnectionError('DataConnector "' . $this->get_alias_with_namespace() . '" expects an instance of FileFinderDataQuery as query, "' . get_class($query) . '" given instead!');
+		if (!($query instanceof FileFinderDataQuery)) throw new DataConnectionQueryTypeError($this, 'DataConnector "' . $this->get_alias_with_namespace() . '" expects an instance of FileFinderDataQuery as query, "' . get_class($query) . '" given instead!', '6T5W75J');
 		
 		$paths = array();
 		// Prepare an array of absolut paths to search in
@@ -60,7 +61,7 @@ class FileFinderConnector extends TransparentConnector {
 		try {
 			$query->get_finder()->in($paths);
 		} catch (\Exception $e){
-			throw new DataConnectionError("Data query failed!", null, $e);
+			throw new DataQueryFailedError($query, "Data query failed!", null, $e);
 			return array();
 		}
 		

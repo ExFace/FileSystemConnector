@@ -5,6 +5,7 @@ use exface\FileSystemConnector\FileContentsDataQuery;
 use exface\Core\DataConnectors\TransparentConnector;
 use exface\Core\Interfaces\DataSources\DataQueryInterface;
 use exface\Core\CommonLogic\Filemanager;
+use exface\Core\Exceptions\DataSources\DataConnectionQueryTypeError;
 
 class FileContentsConnector extends TransparentConnector {
 	
@@ -17,7 +18,7 @@ class FileContentsConnector extends TransparentConnector {
 	 * @return \SplFileInfo[]
 	 */
 	protected function perform_query(DataQueryInterface $query) {
-		if (!($query instanceof FileContentsDataQuery)) throw new DataConnectionError('DataConnector "' . $this->get_alias_with_namespace() . '" expects an instance of FileContentsDataQuery as query, "' . get_class($query) . '" given instead!');
+		if (!($query instanceof FileContentsDataQuery)) throw new DataConnectionQueryTypeError($this, 'DataConnector "' . $this->get_alias_with_namespace() . '" expects an instance of FileContentsDataQuery as query, "' . get_class($query) . '" given instead!', '6T5W75J');
 		
 		return $query;
 	}
