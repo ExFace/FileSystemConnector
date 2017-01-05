@@ -8,6 +8,7 @@ use Wingu\OctopusCore\Reflection\ReflectionClass;
 use exface\Core\CommonLogic\Filemanager;
 use exface\Core\Exceptions\QueryBuilderException;
 use Wingu\OctopusCore\Reflection\ReflectionDocComment;
+use exface\Core\Exceptions\DataSources\DataQueryFailedError;
 
 /**
  * A query builder to read annotations for PHP classes, their methods and properties. Reads general comments and any specified annotation tags.
@@ -29,6 +30,7 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 	private $result_totals=array();
 	private $result_total_rows=0;
 	private $request_uid_filter = null;
+	private $last_query = null;
 	
 	/**
 	 * 
@@ -102,9 +104,10 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 			return false;
 		}
 		
-		$query = $this->build_query();
+		$query = $data_connection->query($this->build_query());
+		$this->set_last_query($query);
 		/* @var $class \Wingu\OctopusCore\Reflection\ReflectionClass */
-		if ($class = $data_connection->query($query)->get_reflection_class()){
+		if ($class = $query->get_reflection_class()){
 			// Read method annotations
 			if (!$annotation_level || $annotation_level == $this::ANNOTATION_LEVEL_CLASS){
 				$row = $this->build_row_from_class($class, array());
@@ -200,11 +203,17 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 			if (array_key_exists($qpart->get_alias(), $row)) continue;
 				
 			// First look through the real tags for exact matches
-			foreach($comment->getAnnotationsCollection()->getAnnotations() as $tag){
-				if ($tag->getTagName() == $qpart->get_data_address()){
-					$row[$qpart->get_alias()] = $tag->getDescription();
-					break;
+			try {
+				foreach($comment->getAnnotationsCollection()->getAnnotations() as $tag){
+					if ($tag->getTagName() == $qpart->get_data_address()){
+						$row[$qpart->get_alias()] = $tag->getDescription();
+						break;
+					}
 				}
+			} catch (\Exception $e){
+				throw new DataQueryFailedError($this->get_last_query(), 'Cannot read annotation "' . $comment->getOriginalDocBlock(). '": ' . $e->getMessage(), null, $e);
+			} catch (\ErrorException $e){
+				throw new DataQueryFailedError($this->get_last_query(), 'Cannot read annotation "' . $comment->getOriginalDocBlock(). '": ' . $e->getMessage(), null, $e);
 			}
 		}
 		return $row;
@@ -249,13 +258,23 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 		foreach ($this->get_attributes_missing_in_row($row) as $qpart){
 			if (!array_key_exists($qpart->get_alias(), $row)){
 				switch ($qpart->get_data_address()){
-					case 'desc': $row[$qpart->get_alias()] = $comment->getFullDescription(); break;
-					case 'desc-short': $row[$qpart->get_alias()] = $comment->getShortDescription(); break;
-					case 'desc-long': $row[$qpart->get_alias()] = $comment->getLongDescription(); break;
+					case 'desc': $row[$qpart->get_alias()] = $this->prepare_comment_text($comment->getFullDescription()); break;
+					case 'desc-short': $row[$qpart->get_alias()] = $this->prepare_comment_text($comment->getShortDescription()); break;
+					case 'desc-long': $row[$qpart->get_alias()] = $this->prepare_comment_text($comment->getLongDescription()); break;
 				}
 			}
 		}
 		return $row;
+	}
+	
+	/**
+	 * Removes single line breaks while leaving empty lines.
+	 * 
+	 * @param string $string
+	 * @return string
+	 */
+	protected function prepare_comment_text($string){
+		return preg_replace('/([^\r\n])\R([^\r\n])/', '$1$2', $string);
 	}
 	
 	/**
@@ -301,5 +320,16 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 	protected function get_ignore_comments_without_matching_tags(){
 		return $this->get_main_object()->get_data_address_property('ignore_comments_without_matching_tags') ? true : false;
 	}
+	
+	protected function get_last_query() {
+		return $this->last_query;
+	}
+	
+	protected function set_last_query(PhpAnnotationsDataQuery $value) {
+		$this->last_query = $value;
+		return $this;
+	}
+	
+	  
 }
 ?>
