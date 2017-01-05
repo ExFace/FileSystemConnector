@@ -40,10 +40,17 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 		
 		// Look for filters, that can be processed by the connector itself
 		foreach ($this->get_filters()->get_filters() as $qpart){
-			switch ($qpart->get_attribute()->get_data_address()){
+			switch (mb_strtolower($qpart->get_attribute()->get_data_address())){
 				case 'filename-relative': $query->set_path_relative($qpart->get_compare_value()); break;
 				case 'filename': $query->set_path_absolute($qpart->get_compare_value()); break;
 				case 'class': $query->set_class_name_with_namespace($qpart->get_compare_value()); break;
+				case 'fqsen': 
+					$class_name = substr($qpart->get_compare_value(), 0, strpos($qpart->get_compare_value(), '::'));
+					if (strpos($class_name, '\\') !== 0){
+						$class_name = '\\' . $class_name;
+					}
+					$query->set_class_name_with_namespace($class_name);
+					// No break; here because we only use the beginning of the value, so the part after :: should be filtered after reading
 				default: $qpart->set_apply_after_reading(true);
 			}
 		}
@@ -167,7 +174,7 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 					}
 					// Add the FQSEN (Fully Qualified Structural Element Name) if we are on class level
 					foreach ($this->get_attributes_missing_in_row($row) as $qpart){
-						if (strcasecmp($qpart->get_data_address(), 'FQSEN')){
+						if (strcasecmp($qpart->get_data_address(), 'FQSEN') === 0){
 							$row[$qpart->get_alias()] = $class->getName();
 						}
 					}
@@ -222,7 +229,7 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 			$row = $this->build_row_from_comment($class, $comment, $row);
 			// Add the FQSEN (Fully Qualified Structural Element Name) if we are on method level
 			foreach ($this->get_attributes_missing_in_row($row) as $qpart){
-				if (strcasecmp($qpart->get_data_address(),'fqsen')){
+				if (strcasecmp($qpart->get_data_address(),'fqsen') === 0){
 					$row[$qpart->get_alias()] = $class->getName() . '::' . $method->getName() . '()';
 				}
 			}
