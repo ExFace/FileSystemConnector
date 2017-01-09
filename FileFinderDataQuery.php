@@ -80,7 +80,7 @@ class FileFinderDataQuery extends AbstractDataQuery {
 	
 	protected function dump_finder(){
 		ob_start();
-		var_dump($this->get_finder());
+		var_dump($this);
 		return ob_get_clean();
 	}
 	
