@@ -3,6 +3,8 @@
 use exface\Core\CommonLogic\Filemanager;
 use Symfony\Component\Finder\Finder;
 use exface\Core\CommonLogic\AbstractDataQuery;
+use exface\Core\Widgets\DebugMessage;
+use exface\Core\Factories\WidgetFactory;
 
 class FileFinderDataQuery extends AbstractDataQuery {
 	private $folders = array();
@@ -54,6 +56,32 @@ class FileFinderDataQuery extends AbstractDataQuery {
 	
 	public function get_full_scan_required(){
 		return $this->fullScanRequired;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * The finder query creates a debug panel showing the dump of the symfony finder object.
+	 *
+	 * @see \exface\Core\CommonLogic\AbstractDataQuery::create_debug_widget()
+	 */
+	public function create_debug_widget(DebugMessage $debug_widget){
+		$page = $debug_widget->get_page();
+		$sql_tab = $debug_widget->create_tab();
+		$sql_tab->set_caption('Finder');
+		/* @var $sql_widget \exface\Core\Widgets\Html */
+		$sql_widget = WidgetFactory::create($page, 'Html', $sql_tab);
+		$sql_widget->set_value('<div style="padding:10px;"><pre>' . $this->dump_finder() . '</pre></div>');
+		$sql_widget->set_width('100%');
+		$sql_tab->add_widget($sql_widget);
+		$debug_widget->add_tab($sql_tab);
+		return $debug_widget;
+	}
+	
+	protected function dump_finder(){
+		ob_start();
+		var_dump($this->get_finder());
+		return ob_get_clean();
 	}
 	
 }
