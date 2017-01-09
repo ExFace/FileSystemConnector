@@ -5,6 +5,7 @@ use Symfony\Component\Finder\Finder;
 use exface\Core\CommonLogic\AbstractDataQuery;
 use exface\Core\Widgets\DebugMessage;
 use exface\Core\Factories\WidgetFactory;
+use exface\Core\Interfaces\DebuggerInterface;
 
 class FileFinderDataQuery extends AbstractDataQuery {
 	private $folders = array();
@@ -67,21 +68,19 @@ class FileFinderDataQuery extends AbstractDataQuery {
 	 */
 	public function create_debug_widget(DebugMessage $debug_widget){
 		$page = $debug_widget->get_page();
-		$sql_tab = $debug_widget->create_tab();
-		$sql_tab->set_caption('Finder');
-		/* @var $sql_widget \exface\Core\Widgets\Html */
-		$sql_widget = WidgetFactory::create($page, 'Html', $sql_tab);
-		$sql_widget->set_value('<div style="padding:10px;"><pre>' . $this->dump_finder() . '</pre></div>');
-		$sql_widget->set_width('100%');
-		$sql_tab->add_widget($sql_widget);
-		$debug_widget->add_tab($sql_tab);
+		$finder_tab = $debug_widget->create_tab();
+		$finder_tab->set_caption('Finder');
+		/* @var $finder_widget \exface\Core\Widgets\Html */
+		$finder_widget = WidgetFactory::create($page, 'Html', $finder_tab);
+		$finder_widget->set_value($this->dump_finder($debug_widget->get_workbench()->get_debugger()));
+		$finder_widget->set_width('100%');
+		$finder_tab->add_widget($finder_widget);
+		$debug_widget->add_tab($finder_tab);
 		return $debug_widget;
 	}
 	
-	protected function dump_finder(){
-		ob_start();
-		var_dump($this);
-		return ob_get_clean();
+	protected function dump_finder(DebuggerInterface $debugger){
+		return $debugger->print_variable($this);
 	}
 	
 }
