@@ -26,10 +26,23 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		
 		// Look for filters, that can be processed by the connector itself
 		foreach ($this->get_filters()->get_filters() as $qpart){
-			if ($qpart->get_attribute()->get_id() == $this->get_main_object()->get_uid_attribute()->get_id() 
-			&& ($qpart->get_comparator() == EXF_COMPARATOR_EQUALS || $qpart->get_comparator() == EXF_COMPARATOR_IN || $qpart->get_comparator() == EXF_COMPARATOR_IS)){
-				$path_pattern = $qpart->get_compare_value();
-				$path_pattern = Filemanager::path_normalize($path_pattern);
+			if ($qpart->get_attribute()->get_id() == $this->get_main_object()->get_uid_attribute()->get_id()){
+				switch ($qpart->get_comparator()){
+					case EXF_COMPARATOR_IS:
+					case EXF_COMPARATOR_EQUALS: 
+						$path_pattern = Filemanager::path_normalize($qpart->get_compare_value());
+						break;
+					case EXF_COMPARATOR_IN:
+						$values = explode(EXF_LIST_SEPARATOR, $qpart->get_compare_value());
+						if (count($values) === 1){
+							$path_pattern = Filemanager::path_normalize($values[0]);
+							break;
+						}
+						// No "break;" here to fallback to default if none of the ifs above worked
+					default: 
+						$qpart->set_apply_after_reading(true);
+						$query->set_full_scan_required(true);
+				}
 			} elseif ($qpart->get_attribute()->get_id() == $this->get_main_object()->get_label_attribute()->get_id()){
 				switch ($qpart->get_comparator()){
 					case EXF_COMPARATOR_IS: $filename = '/.*' . preg_quote($qpart->get_compare_value()) . './i'; break;
