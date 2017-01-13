@@ -171,7 +171,7 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 				// If we are specificlally interesten in the class annotations, search for fields
 				// in the class comment specifically
 				if ($this->get_annotation_level() == $this::ANNOTATION_LEVEL_CLASS){
-					if ($comment = $class->getReflectionDocComment()){
+					if ($comment = $class->getReflectionDocComment("\n\r\0\x0B")){
 						$row = $this->build_row_from_comment_tags($class, $comment, $row);
 						$row = $this->build_row_from_comment($class, $comment, $row);
 					}
@@ -228,7 +228,7 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 	 */
 	protected function build_row_from_method(ReflectionClass $class, ReflectionMethod $method, array $row){
 		// First look for exact matches among the tags within the comment
-		$comment = $method->getReflectionDocComment();
+		$comment = $method->getReflectionDocComment("\n\r\0\x0B");
 		$row = $this->build_row_from_comment_tags($class, $comment, $row);
 		
 		// If at least one exact match was found, this method is a valid row.
@@ -274,7 +274,7 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 	 * @return string
 	 */
 	protected function prepare_comment_text($string){
-		return preg_replace('/([^\r\n])\R([^\r\n])/', '$1$2', $string);
+		return preg_replace('/([^\r\n])\R([^{}\s\r\n])/', '$1$2', $string);
 	}
 	
 	/**
