@@ -15,7 +15,6 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 	private $result_rows=array();
 	private $result_totals=array();
 	private $result_total_rows=0;
-	private $request_uid_filter = null;
 	
 	/**
 	 * 

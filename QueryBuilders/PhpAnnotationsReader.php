@@ -29,7 +29,6 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 	private $result_rows=array();
 	private $result_totals=array();
 	private $result_total_rows=0;
-	private $request_uid_filter = null;
 	private $last_query = null;
 	
 	/**
