@@ -107,7 +107,7 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 		$this->set_last_query($query);
 		/* @var $class \Wingu\OctopusCore\Reflection\ReflectionClass */
 		if ($class = $query->get_reflection_class()){
-			// Read method annotations
+			// Read class annotations
 			if (!$annotation_level || $annotation_level == $this::ANNOTATION_LEVEL_CLASS){
 				$row = $this->build_row_from_class($class, array());
 				if (count($row) > 0){
