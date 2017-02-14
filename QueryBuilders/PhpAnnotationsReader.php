@@ -55,6 +55,12 @@ class PhpAnnotationsReader extends AbstractQueryBuilder {
 				default: $qpart->set_apply_after_reading(true);
 			}
 		}
+		
+		// All the sorting must be done locally 
+		foreach($this->get_sorters() as $qpart){
+			$qpart->set_apply_after_reading(true);
+		}
+		
 		return $query;
 	}
 	

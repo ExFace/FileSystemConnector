@@ -61,6 +61,10 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		
 		if (count($this->get_sorters()) > 0){
 			$query->set_full_scan_required(true);
+			// All the sorting is done locally
+			foreach($this->get_sorters() as $qpart){
+				$qpart->set_apply_after_reading(true);
+			}
 		}
 		
 		$query->get_finder()->name($filename);
