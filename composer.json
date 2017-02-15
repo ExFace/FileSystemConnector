@@ -15,7 +15,7 @@
     },
     "require": {
         "exface/core": "~0.1",
-        "wingu/reflection": "~1.0.4",
+        "wingu/reflection": "~1.0.5",
         "symfony/finder": "~3.1.7"
     },
     "extra": {
