@@ -1,5 +1,5 @@
 {
-    "name": "ExFace/FileSystemConnector",
+    "name": "exface/FileSystemConnector",
     "description": "Data connector to use files and folders as data sources",
     "type": "library",
     "license": "GPL-3.0+",
