@@ -51,7 +51,7 @@ class FileFinderDataQuery extends AbstractDataQuery {
 	} 
 	
 	public function set_full_scan_required($value){
-		$this->fullScanRequired = $value ? true : false;
+		$this->fullScanRequired = filter_var($value, FILTER_VALIDATE_BOOLEAN);
 		return $this;
 	}
 	
