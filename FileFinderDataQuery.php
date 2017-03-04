@@ -51,7 +51,7 @@ class FileFinderDataQuery extends AbstractDataQuery {
 	} 
 	
 	public function set_full_scan_required($value){
-		$this->fullScanRequired = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+		$this->fullScanRequired = \exface\Core\DataTypes\BooleanDataType::parse($value);
 		return $this;
 	}
 	
