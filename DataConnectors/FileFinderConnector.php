@@ -6,10 +6,12 @@ use exface\Core\DataConnectors\TransparentConnector;
 use exface\Core\Interfaces\DataSources\DataQueryInterface;
 use exface\Core\Exceptions\DataSources\DataConnectionQueryTypeError;
 use exface\Core\Exceptions\DataSources\DataQueryFailedError;
+use exface\Core\DataTypes\BooleanDataType;
 
 class FileFinderConnector extends TransparentConnector {
 	private $base_path = null;
 	private $use_vendor_folder_as_base = false;
+	private $ignore_path_not_found_errors = true;
 	
 	/**
 	 * 
@@ -54,6 +56,17 @@ class FileFinderConnector extends TransparentConnector {
 		// If no paths could be found anywhere (= the query object did not have any folders defined), use the base path
 		if (count($paths) == 0){
 			$paths[] = $query->get_base_path();
+		}
+		
+		if ($this->get_ignore_path_not_found_errors()){
+			foreach ($paths as $nr => $path){
+				if (!is_dir($path)){
+					unset($paths[$nr]);
+				}
+			}
+			if (count($paths) == 0){
+				return $query;
+			}
 		}
 		
 		// Perform the search. This will fill the file and folder iterators in the finder instance. Thus, the resulting
@@ -111,7 +124,27 @@ class FileFinderConnector extends TransparentConnector {
 	public function set_use_vendor_folder_as_base($value) {
 		$this->use_vendor_folder_as_base = \exface\Core\DataTypes\BooleanDataType::parse($value);
 		return $this;
-	}  
+	} 
+	
+	public function get_ignore_path_not_found_errors() {
+		return $this->ignore_path_not_found_errors;
+	}
+	
+	/**
+	 * Set to TRUE to treat non-existant folders as empty folders. FALSE (default) will produce an error if the path does not exist.
+	 * 
+	 * @uxon-property ignore_path_not_found_errors
+	 * @uxon-type boolean
+	 * 
+	 * @param boolean $value
+	 * @return \exface\FileSystemConnector\DataConnectors\FileFinderConnector
+	 */
+	public function set_ignore_path_not_found_errors($value) {
+		$this->ignore_path_not_found_errors = BooleanDataType::parse($value);
+		return $this;
+	}
+	
+	  
   
 }
 ?>
