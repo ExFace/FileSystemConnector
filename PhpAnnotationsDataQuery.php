@@ -38,6 +38,13 @@ class PhpAnnotationsDataQuery extends FileContentsDataQuery {
 		return $this;
 	}  
 	
+	/**
+	 * Returns the qualified class name of the first class defined in the file.
+	 * 
+	 * @param string $absolute_path
+	 * @throws \InvalidArgumentException
+	 * @return string
+	 */
 	protected static function get_class_from_file($absolute_path){
 		if (!file_exists($absolute_path) && !is_dir($absolute_path)){
 			throw new \InvalidArgumentException('Cannot get class from file "' . $absolute_path . '" - file not found!');
@@ -72,9 +79,8 @@ class PhpAnnotationsDataQuery extends FileContentsDataQuery {
 	
 				if ($tokens[$i][0] === T_CLASS) {
 					for ($j=$i+1;$j<count($tokens);$j++) {
-						if ($tokens[$j] === '{') {
-							$class = $tokens[$i+2][1];
-						}
+						$class = trim($tokens[$i+2][1]);
+						break;
 					}
 				}
 			}
