@@ -44,11 +44,11 @@
             "attribute_alias": "APP"
         },
         {
-            "expression": "CONNECTION",
-            "name": "CONNECTION",
+            "expression": "DEFAULT_CONNECTION",
+            "name": "DEFAULT_CONNECTION",
             "hidden": false,
             "data_type": "Relation",
-            "attribute_alias": "CONNECTION"
+            "attribute_alias": "DEFAULT_CONNECTION"
         },
         {
             "expression": "BASE_OBJECT",
@@ -89,12 +89,12 @@
     "rows": [
         {
             "CREATED_ON": "2016-11-21 10:54:08",
-            "MODIFIED_ON": "2016-11-22 10:43:31",
+            "MODIFIED_ON": "2017-04-19 10:34:39",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11e6afd8d2fa47e78943e4b318306b9a",
             "APP": "0x11e6afcdf70406e78943e4b318306b9a",
-            "CONNECTION": "0x11e6b09c8ccac11d8943e4b318306b9a",
+            "DEFAULT_CONNECTION": "0x11e6b09c8ccac11d8943e4b318306b9a",
             "BASE_OBJECT": "0x11e6afd8efb4743f8943e4b318306b9a",
             "READONLY": "1",
             "LABEL": "Local Vendor Folders",
@@ -103,12 +103,12 @@
         },
         {
             "CREATED_ON": "2016-11-22 10:26:30",
-            "MODIFIED_ON": "2016-11-22 10:16:47",
+            "MODIFIED_ON": "2017-04-18 16:53:06",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11e6b09e2002641f8943e4b318306b9a",
             "APP": "0x11e6afcdf70406e78943e4b318306b9a",
-            "CONNECTION": "0x11e6afd88b5ffcd28943e4b318306b9a",
+            "DEFAULT_CONNECTION": "0x11e6afd88b5ffcd28943e4b318306b9a",
             "BASE_OBJECT": "0x11e6afd8efb4743f8943e4b318306b9a",
             "READONLY": "0",
             "LABEL": "Local Folders",
@@ -117,12 +117,12 @@
         },
         {
             "CREATED_ON": "2016-12-06 15:19:26",
-            "MODIFIED_ON": "2016-12-06 15:33:45",
+            "MODIFIED_ON": "2017-04-19 10:35:28",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11e6bbc75f27b3a29ee0e4b318306b9a",
             "APP": "0x11e6afcdf70406e78943e4b318306b9a",
-            "CONNECTION": "0x11e6bbc738b084ae9ee0e4b318306b9a",
+            "DEFAULT_CONNECTION": "0x11e6bbc738b084ae9ee0e4b318306b9a",
             "BASE_OBJECT": "0x11e6bae2326c99b59ee0e4b318306b9a",
             "READONLY": "0",
             "LABEL": "PHP Annotations",
