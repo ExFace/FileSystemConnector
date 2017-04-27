@@ -128,6 +128,20 @@
             "READONLY": "1",
             "ALIAS": "PHP_ANNOTATIONS",
             "FILTER_CONTEXT": ""
+        },
+        {
+            "CREATED_ON": "2017-04-27 15:27:08",
+            "MODIFIED_ON": "2017-04-27 15:26:46",
+            "CREATED_BY_USER": "0x31000000000000000000000000000000",
+            "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
+            "UID": "0x11e72b5df9840faea3bee4b318306b9a",
+            "APP": "0x11e6afcdf70406e78943e4b318306b9a",
+            "LABEL": "Local file",
+            "CONNECTOR": "exface\/FileSystemConnector\/DataConnectors\/FileContentsConnector.php",
+            "CONFIG": "{}",
+            "READONLY": "0",
+            "ALIAS": "LOCAL_FILE",
+            "FILTER_CONTEXT": ""
         }
     ],
     "totals_rows": [],

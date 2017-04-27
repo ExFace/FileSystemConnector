@@ -17,11 +17,19 @@ class FileFinderConnector extends TransparentConnector {
 	 * @see \exface\Core\CommonLogic\AbstractDataConnector::perform_connect()
 	 */
 	protected function perform_connect() {
-		if (!is_null($this->get_base_path())){
-			$this->set_base_path($this->get_workbench()->filemanager()->get_path_to_base_folder());
-		} elseif ($this->get_use_vendor_folder_as_base() != false){
-			$this->set_base_path($this->get_workbench()->filemanager()->get_path_to_vendor_folder());
+		$base_path = $this->get_base_path();
+		
+		if ($this->get_use_vendor_folder_as_base() != false){
+			$base_path = $this->get_workbench()->filemanager()->get_path_to_vendor_folder();
+		} elseif (is_null($base_path)){
+			$base_path = $this->get_workbench()->filemanager()->get_path_to_base_folder();
 		}
+		
+		if (Filemanager::path_is_absolute($this->get_base_path())){
+			$base_path = Filemanager::path_join($this->get_workbench()->filemanager()->get_path_to_base_folder(), $this->get_base_path());
+		}  
+		
+		$this->set_base_path($base_path);
 		return;
 	}
 
