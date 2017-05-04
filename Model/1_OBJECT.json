@@ -110,7 +110,7 @@
     "rows": [
         {
             "CREATED_ON": "2016-11-21 10:54:56",
-            "MODIFIED_ON": "2017-05-04 10:59:08",
+            "MODIFIED_ON": "2017-05-04 11:22:11",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11e6afd8efb4743f8943e4b318306b9a",
@@ -121,7 +121,7 @@
             "PARENT_OBJECT": "",
             "DATA_ADDRESS_PROPS": "{}",
             "DEFAULT_EDITOR_UXON": "{}",
-            "LABEL": "Local File",
+            "LABEL": "File",
             "ALIAS": "FILE",
             "DATA_ADDRESS": ""
         },
