@@ -16,7 +16,8 @@
     "require": {
         "exface/core": "~0.1",
         "wingu/reflection": "~1.0.5",
-        "symfony/finder": "~3.1.7"
+        "symfony/finder": "~3.1.7",
+        "league/csv": "^8.0"
     },
     "extra": {
         "app": {
