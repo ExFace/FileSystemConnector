@@ -142,20 +142,6 @@
             "READONLY": "0",
             "LABEL": "Local CSV file",
             "ALIAS": "LOCAL_CSV_FILE"
-        },
-        {
-            "CREATED_ON": "2017-05-10 09:37:47",
-            "MODIFIED_ON": "2017-04-28 10:08:31",
-            "CREATED_BY_USER": "",
-            "MODIFIED_BY_USER": "",
-            "UID": "0x11e7355390695395a6300242ac110004",
-            "APP": "0x11e6afcdf70406e78943e4b318306b9a",
-            "DEFAULT_CONNECTION": "0x11e72b5df9840faea3bee4b318306b9a",
-            "DEFAULT_QUERY_BUILDER": "exface\/FileSystemConnector\/QueryBuilders\/DailyLogfileCvsBuilder.php",
-            "BASE_OBJECT": "",
-            "READONLY": "0",
-            "LABEL": "Local daily CSV file",
-            "ALIAS": "LOCAL_DAILY_CSV_FILE"
         }
     ],
     "totals_rows": [],
