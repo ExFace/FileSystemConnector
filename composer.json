@@ -16,13 +16,14 @@
     "require": {
         "exface/core": "~0.1",
         "wingu/reflection": "~1.0.5",
-        "symfony/finder": "~3.1.7"
+        "symfony/finder": "~3.1.7",
+        "league/csv": "^8.0"
     },
     "extra": {
         "app": {
             "app_uid": "0x11e6afcdf70406e78943e4b318306b9a",
             "app_alias": "exface.FileSystemConnector",
-            "model_md5": "35f734883db801ac54a5faef893d404d",
+            "model_md5": "29bf90256676ba776766493c536bca04",
             "model_timestamp": "2017-05-04 11:22:11"
         }
     }
