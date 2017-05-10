@@ -2,71 +2,21 @@
 
 use exface\Core\CommonLogic\QueryBuilder\AbstractQueryBuilder;
 use exface\Core\CommonLogic\AbstractDataConnector;
-use exface\FileSystemConnector\FileContentsDataQuery;
 use League\Csv\Reader;
 use SplFileObject;
-use exface\Core\Exceptions\QueryBuilderException;
 
 /**
  * A query builder to read CSV files.
  * 
+ * Supported data address properties
+ * - DELIMITER - defaults to comma (,)
+ * - ENCLOSURE - defaults to double quotes (")
+ * - HAS_HEADER_ROW - specifies if the file has a header row with coulumn titles or not. Defaults to no (0)
  *  
  * @author Andrej Kabachnik
  *
  */
-class CsvBuilder extends AbstractQueryBuilder {
-	
-	private $result_rows=array();
-	private $result_totals=array();
-	private $result_total_rows=0;
-	
-	/**
-	 * 
-	 * @return FileContentsDataQuery
-	 */
-	protected function build_query(){
-		$query = new FileContentsDataQuery();
-		$query->set_path_relative($this->replace_placeholders_in_path($this->get_main_object()->get_data_address()));
-		return $query;
-	}
-	
-	public function get_result_rows(){
-		return $this->result_rows;
-	}
-	
-	public function get_result_totals(){
-		return $this->result_totals;
-	}
-	
-	public function get_result_total_rows(){
-		return $this->result_total_rows;
-	}
-	
-	public function set_result_rows(array $array){
-		$this->result_rows = $array;
-		return $this;
-	}
-	
-	public function set_result_totals(array $array){
-		$this->result_totals = $array;
-		return $this;
-	}
-	
-	public function set_result_total_rows($value){
-		$this->result_total_rows = $value;
-		return $this;
-	}
-	
-	protected function get_file_property($query, $data_address){
-		switch (mb_strtoupper($data_address)){
-			case '_FILEPATH':
-				return $query->get_path_absolute();
-			case '_FILEPATH_RELATIVE':
-				return $query->get_path_relative();
-			default:
-				return false;
-		}
-	}
+class CsvBuilder extends FileContentsBuilder {
 	
 	/**
 	 * 
@@ -93,7 +43,7 @@ class CsvBuilder extends AbstractQueryBuilder {
 
 		// configuration
 		$delimiter = $this->get_main_object()->get_data_address_property('DELIMITER') ? $this->get_main_object()->get_data_address_property('DELIMITER') : ',';
-		$enclosure = $this->get_main_object()->get_data_address_property('ENCLOSURE') ? $this->get_main_object()->get_data_address_property('ENCLOSURE') : ',';
+		$enclosure = $this->get_main_object()->get_data_address_property('ENCLOSURE') ? $this->get_main_object()->get_data_address_property('ENCLOSURE') : '"';
 
 		// prepare filters
 		foreach ($this->get_filters()->get_filters() as $qpart){
@@ -191,29 +141,6 @@ class CsvBuilder extends AbstractQueryBuilder {
 		return $filtered->each(function ($row) {
 			return true;
 		});
-	}
-	
-	/**
-	 * Looks for placeholders in the give path and replaces them with values from the corresponding filters.
-	 * Returns the given string with all placeholders replaced or FALSE if some placeholders could not be replaced.
-	 *
-	 * @param string $path
-	 * @return string|boolean
-	 */
-	protected function replace_placeholders_in_path($path){
-		foreach ($this->get_workbench()->utils()->find_placeholders_in_string($path) as $ph){
-			if ($ph_filter = $this->get_filter($ph)){
-				if (!is_null($ph_filter->get_compare_value())){
-					$path = str_replace('[#'.$ph.'#]', $ph_filter->get_compare_value(), $path);
-				} else {
-					throw new QueryBuilderException('Filter "' . $ph_filter->get_alias() . '" required for "' . $path . '" does not have a value!');
-				}
-			} else {
-				// If at least one placeholder does not have a corresponding filter, return false
-				throw new QueryBuilderException('No filter found in query for placeholder "' . $ph . '" required for "' . $path . '"!');
-			}
-		}
-		return $path;
 	}
 }
 ?>
