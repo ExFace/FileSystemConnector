@@ -56,8 +56,14 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 		// Setup query
 		$path_pattern = $path_pattern ? $path_pattern : $this->get_main_object()->get_data_address();
 		$last_slash_pos = mb_strripos($path_pattern, '/');
-		$path_relative = substr($path_pattern, 0, $last_slash_pos);
-		$filename = $filename ? $filename : substr($path_pattern, ($last_slash_pos+1));
+		if ($last_slash_pos === false){
+			$path_relative = $path_pattern;
+		} else {
+			$path_relative = substr($path_pattern, 0, $last_slash_pos);
+			$filename = $filename ? $filename : substr($path_pattern, ($last_slash_pos+1));
+		}
+		
+		
 		
 		if (count($this->get_sorters()) > 0){
 			$query->set_full_scan_required(true);
@@ -67,7 +73,9 @@ class FileFinderBuilder extends AbstractQueryBuilder {
 			}
 		}
 		
-		$query->get_finder()->name($filename);
+		if (!is_null($filename) && $filename !== ''){
+			$query->get_finder()->name($filename);
+		}
 		$query->add_folder($path_relative);
 		
 		return $query;
