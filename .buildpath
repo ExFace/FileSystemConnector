@@ -5,4 +5,5 @@
 	<buildpathentry external="true" kind="lib" path="C:/wamp/www/exface/exface/vendor/exface/Core"/>
 	<buildpathentry external="true" kind="lib" path="C:/wamp/www/exface/exface/vendor/symfony/finder"/>
 	<buildpathentry external="true" kind="lib" path="C:/wamp/www/exface/exface/vendor/wingu/reflection/src"/>
+	<buildpathentry external="true" kind="lib" path="C:/wamp/www/exface/exface/vendor/league/csv/src"/>
 </buildpath>

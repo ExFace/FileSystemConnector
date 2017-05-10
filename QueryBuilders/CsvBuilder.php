@@ -5,6 +5,7 @@ use exface\Core\CommonLogic\AbstractDataConnector;
 use exface\FileSystemConnector\FileContentsDataQuery;
 use League\Csv\Reader;
 use SplFileObject;
+use exface\Core\Exceptions\QueryBuilderException;
 
 /**
  * A query builder to read CSV files.
@@ -25,7 +26,7 @@ class CsvBuilder extends AbstractQueryBuilder {
 	 */
 	protected function build_query(){
 		$query = new FileContentsDataQuery();
-		$query->set_path_relative($this->get_main_object()->get_data_address());
+		$query->set_path_relative($this->replace_placeholders_in_path($this->get_main_object()->get_data_address()));
 		return $query;
 	}
 	
@@ -56,6 +57,17 @@ class CsvBuilder extends AbstractQueryBuilder {
 		return $this;
 	}
 	
+	protected function get_file_property($query, $data_address){
+		switch (mb_strtoupper($data_address)){
+			case '_FILEPATH':
+				return $query->get_path_absolute();
+			case '_FILEPATH_RELATIVE':
+				return $query->get_path_relative();
+			default:
+				return false;
+		}
+	}
+	
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -70,8 +82,13 @@ class CsvBuilder extends AbstractQueryBuilder {
 		$data_connection->query($query);
 
 		$field_map = array();
+		$static_values = array();
 		foreach ($this->get_attributes() as $qpart){
-			$field_map[$qpart->get_alias()] = $qpart->get_data_address();
+			if ($this->get_file_property($query, $qpart->get_data_address()) !== false){
+				$static_values[$qpart->get_alias()] = $this->get_file_property($query, $qpart->get_data_address());
+			} else {
+				$field_map[$qpart->get_alias()] = $qpart->get_data_address();
+			}
 		}
 
 		// configuration
@@ -80,8 +97,12 @@ class CsvBuilder extends AbstractQueryBuilder {
 
 		// prepare filters
 		foreach ($this->get_filters()->get_filters() as $qpart){
-			$qpart->set_alias($field_map[$qpart->get_alias()]); // use numeric alias since league/csv filter on arrays with numeric indexes
-			$qpart->set_apply_after_reading(true);
+			if ($this->get_file_property($query, $qpart->get_data_address()) === false){
+				$qpart->set_alias($qpart->get_data_address()); // use numeric alias since league/csv filter on arrays with numeric indexes
+				$qpart->set_apply_after_reading(true);
+			} else {
+				// TODO check if the filters on file properties match. Only need to check that once, as the query onle deals with a single file
+			}
 		}
 
 		// prepare reader
@@ -112,6 +133,13 @@ class CsvBuilder extends AbstractQueryBuilder {
 
 		// sorting
 		$result_rows = $this->apply_sorting($result_rows);
+		
+		// add static values
+		foreach ($static_values as $alias => $val){
+			foreach (array_keys($result_rows) as $row_nr){
+				$result_rows[$row_nr][$alias] = $val;
+			}
+		}
 		
 		$this->set_result_rows($result_rows);
 		return $this->get_result_total_rows();
@@ -163,6 +191,29 @@ class CsvBuilder extends AbstractQueryBuilder {
 		return $filtered->each(function ($row) {
 			return true;
 		});
+	}
+	
+	/**
+	 * Looks for placeholders in the give path and replaces them with values from the corresponding filters.
+	 * Returns the given string with all placeholders replaced or FALSE if some placeholders could not be replaced.
+	 *
+	 * @param string $path
+	 * @return string|boolean
+	 */
+	protected function replace_placeholders_in_path($path){
+		foreach ($this->get_workbench()->utils()->find_placeholders_in_string($path) as $ph){
+			if ($ph_filter = $this->get_filter($ph)){
+				if (!is_null($ph_filter->get_compare_value())){
+					$path = str_replace('[#'.$ph.'#]', $ph_filter->get_compare_value(), $path);
+				} else {
+					throw new QueryBuilderException('Filter "' . $ph_filter->get_alias() . '" required for "' . $path . '" does not have a value!');
+				}
+			} else {
+				// If at least one placeholder does not have a corresponding filter, return false
+				throw new QueryBuilderException('No filter found in query for placeholder "' . $ph . '" required for "' . $path . '"!');
+			}
+		}
+		return $path;
 	}
 }
 ?>
