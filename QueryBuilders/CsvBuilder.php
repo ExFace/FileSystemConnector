@@ -55,6 +55,12 @@ class CsvBuilder extends FileContentsBuilder {
 			}
 		}
 
+		// prepare sorting
+		foreach ($this->get_sorters() as $qpart){
+			$qpart->set_alias($qpart->get_data_address());
+			$qpart->set_apply_after_reading(true);
+		}
+
 		// prepare reader
 		$csv = Reader::createFromPath(new SplFileObject($query->get_path_absolute()));
 		$csv->setDelimiter($delimiter);
@@ -73,6 +79,15 @@ class CsvBuilder extends FileContentsBuilder {
 		$filtered->setOffset($this->get_offset());
 		$filtered->setLimit($this->get_limit());
 
+		// sorting
+		$filtered->addSortBy(function ($row1, $row2) {
+			$sorted = parent::apply_sorting(array($row1, $row2));
+			if ($sorted[0] == $row1)
+				return 1;
+			else
+				return -1;
+		});
+
 		$assocKeys = $this->getAssocKeys($colCount, $field_map);
 		$result_rows = $filtered->fetchAssoc($assocKeys);
 		$result_rows = iterator_to_array($result_rows);
@@ -80,9 +95,6 @@ class CsvBuilder extends FileContentsBuilder {
 		// row count
 		$rowCount = $this->getRowCount($query->get_path_absolute(), $delimiter, $enclosure);
 		$this->set_result_total_rows($rowCount);
-
-		// sorting
-		$result_rows = $this->apply_sorting($result_rows);
 		
 		// add static values
 		foreach ($static_values as $alias => $val){
@@ -93,13 +105,6 @@ class CsvBuilder extends FileContentsBuilder {
 		
 		$this->set_result_rows($result_rows);
 		return $this->get_result_total_rows();
-	}
-	
-	public function apply_sorting($row_array){
-		foreach ($this->get_sorters() as $qpart){
-			$qpart->set_apply_after_reading(true);
-		}
-		return parent::apply_sorting($row_array);
 	}
 
 	protected function getAssocKeys($colCount, $field_map) {
