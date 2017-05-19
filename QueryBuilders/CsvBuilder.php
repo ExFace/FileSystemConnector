@@ -2,6 +2,7 @@
 
 use exface\Core\CommonLogic\QueryBuilder\AbstractQueryBuilder;
 use exface\Core\CommonLogic\AbstractDataConnector;
+use exface\FileSystemConnector\FileContentsDataQuery;
 use League\Csv\Reader;
 use SplFileObject;
 
@@ -32,7 +33,6 @@ class CsvBuilder extends FileContentsBuilder {
 		$data_connection->query($query);
 
 		$field_map = array();
-		$static_values = array();
 		foreach ($this->get_attributes() as $qpart){
 			if ($this->get_file_property($query, $qpart->get_data_address()) !== false){
 				$static_values[$qpart->get_alias()] = $this->get_file_property($query, $qpart->get_data_address());
@@ -43,7 +43,8 @@ class CsvBuilder extends FileContentsBuilder {
 
 		// configuration
 		$delimiter = $this->get_main_object()->get_data_address_property('DELIMITER') ? $this->get_main_object()->get_data_address_property('DELIMITER') : ',';
-		$enclosure = $this->get_main_object()->get_data_address_property('ENCLOSURE') ? $this->get_main_object()->get_data_address_property('ENCLOSURE') : '"';
+		$enclosure = $this->get_main_object()->get_data_address_property('ENCLOSURE') ? $this->get_main_object()->get_data_address_property('ENCLOSURE') : "'";
+		$hasHeaderRow = $this->get_main_object()->get_data_address_property('HAS_HEADER_ROW') ? $this->get_main_object()->get_data_address_property('HAS_HEADER_ROW') : 0;
 
 		// prepare filters
 		foreach ($this->get_filters()->get_filters() as $qpart){
@@ -76,7 +77,8 @@ class CsvBuilder extends FileContentsBuilder {
 		});
 
 		// pagination
-		$filtered->setOffset($this->get_offset());
+		$offset = $hasHeaderRow ? $this->get_offset() + 1 : $this->get_offset();
+		$filtered->setOffset($offset);
 		$filtered->setLimit($this->get_limit());
 
 		// sorting
@@ -94,6 +96,9 @@ class CsvBuilder extends FileContentsBuilder {
 
 		// row count
 		$rowCount = $this->getRowCount($query->get_path_absolute(), $delimiter, $enclosure);
+		if ($hasHeaderRow)
+			$rowCount = max(0, $rowCount - 1);
+
 		$this->set_result_total_rows($rowCount);
 		
 		// add static values
