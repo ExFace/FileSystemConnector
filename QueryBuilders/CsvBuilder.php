@@ -2,6 +2,7 @@
 
 use exface\Core\CommonLogic\QueryBuilder\AbstractQueryBuilder;
 use exface\Core\CommonLogic\AbstractDataConnector;
+use exface\FileSystemConnector\FileContentsDataQuery;
 use League\Csv\Reader;
 use SplFileObject;
 
@@ -32,7 +33,6 @@ class CsvBuilder extends FileContentsBuilder {
 		$data_connection->query($query);
 
 		$field_map = array();
-		$static_values = array();
 		foreach ($this->get_attributes() as $qpart){
 			if ($this->get_file_property($query, $qpart->get_data_address()) !== false){
 				$static_values[$qpart->get_alias()] = $this->get_file_property($query, $qpart->get_data_address());
@@ -43,7 +43,8 @@ class CsvBuilder extends FileContentsBuilder {
 
 		// configuration
 		$delimiter = $this->get_main_object()->get_data_address_property('DELIMITER') ? $this->get_main_object()->get_data_address_property('DELIMITER') : ',';
-		$enclosure = $this->get_main_object()->get_data_address_property('ENCLOSURE') ? $this->get_main_object()->get_data_address_property('ENCLOSURE') : '"';
+		$enclosure = $this->get_main_object()->get_data_address_property('ENCLOSURE') ? $this->get_main_object()->get_data_address_property('ENCLOSURE') : "'";
+		$hasHeaderRow = $this->get_main_object()->get_data_address_property('HAS_HEADER_ROW') ? $this->get_main_object()->get_data_address_property('HAS_HEADER_ROW') : 0;
 
 		// prepare filters
 		foreach ($this->get_filters()->get_filters() as $qpart){
@@ -53,6 +54,12 @@ class CsvBuilder extends FileContentsBuilder {
 			} else {
 				// TODO check if the filters on file properties match. Only need to check that once, as the query onle deals with a single file
 			}
+		}
+
+		// prepare sorting
+		foreach ($this->get_sorters() as $qpart){
+			$qpart->set_alias($qpart->get_data_address());
+			$qpart->set_apply_after_reading(true);
 		}
 
 		// prepare reader
@@ -70,8 +77,18 @@ class CsvBuilder extends FileContentsBuilder {
 		});
 
 		// pagination
-		$filtered->setOffset($this->get_offset());
+		$offset = $hasHeaderRow ? $this->get_offset() + 1 : $this->get_offset();
+		$filtered->setOffset($offset);
 		$filtered->setLimit($this->get_limit());
+
+		// sorting
+		$filtered->addSortBy(function ($row1, $row2) {
+			$sorted = parent::apply_sorting(array($row1, $row2));
+			if ($sorted[0] == $row1)
+				return 1;
+			else
+				return -1;
+		});
 
 		$assocKeys = $this->getAssocKeys($colCount, $field_map);
 		$result_rows = $filtered->fetchAssoc($assocKeys);
@@ -79,10 +96,10 @@ class CsvBuilder extends FileContentsBuilder {
 
 		// row count
 		$rowCount = $this->getRowCount($query->get_path_absolute(), $delimiter, $enclosure);
-		$this->set_result_total_rows($rowCount);
+		if ($hasHeaderRow)
+			$rowCount = max(0, $rowCount - 1);
 
-		// sorting
-		$result_rows = $this->apply_sorting($result_rows);
+		$this->set_result_total_rows($rowCount);
 		
 		// add static values
 		foreach ($static_values as $alias => $val){
@@ -93,13 +110,6 @@ class CsvBuilder extends FileContentsBuilder {
 		
 		$this->set_result_rows($result_rows);
 		return $this->get_result_total_rows();
-	}
-	
-	public function apply_sorting($row_array){
-		foreach ($this->get_sorters() as $qpart){
-			$qpart->set_apply_after_reading(true);
-		}
-		return parent::apply_sorting($row_array);
 	}
 
 	protected function getAssocKeys($colCount, $field_map) {
