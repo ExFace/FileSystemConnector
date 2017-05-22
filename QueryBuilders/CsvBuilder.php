@@ -32,6 +32,7 @@ class CsvBuilder extends FileContentsBuilder {
 		
 		$data_connection->query($query);
 
+		$static_values = array();
 		$field_map = array();
 		foreach ($this->get_attributes() as $qpart){
 			if ($this->get_file_property($query, $qpart->get_data_address()) !== false){
