@@ -1,5 +1,4 @@
 <?php
-
 namespace exface\FileSystemConnector\DataConnectors;
 
 use exface\FileSystemConnector\PhpAnnotationsDataQuery;

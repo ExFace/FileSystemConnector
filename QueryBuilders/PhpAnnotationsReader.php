@@ -1,5 +1,4 @@
 <?php
-
 namespace exface\FileSystemConnector\QueryBuilders;
 
 use exface\Core\CommonLogic\QueryBuilder\AbstractQueryBuilder;
@@ -48,9 +47,7 @@ class PhpAnnotationsReader extends AbstractQueryBuilder
     protected function buildQuery()
     {
         $query = new PhpAnnotationsDataQuery();
-        $query->setBasePath($this->getWorkbench()
-            ->filemanager()
-            ->getPathToVendorFolder());
+        $query->setBasePath($this->getWorkbench()->filemanager()->getPathToVendorFolder());
         
         // Look for filters, that can be processed by the connector itself
         foreach ($this->getFilters()->getFilters() as $qpart) {
@@ -361,9 +358,7 @@ class PhpAnnotationsReader extends AbstractQueryBuilder
      */
     protected function getFilePathnameRelative(ReflectionClass $class)
     {
-        return Filemanager::pathNormalize(str_replace($this->getWorkbench()
-            ->filemanager()
-            ->getPathToVendorFolder() . DIRECTORY_SEPARATOR, '', $class->getFileName()));
+        return Filemanager::pathNormalize(str_replace($this->getWorkbench()->filemanager()->getPathToVendorFolder() . DIRECTORY_SEPARATOR, '', $class->getFileName()));
     }
 
     /**

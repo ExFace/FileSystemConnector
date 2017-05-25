@@ -1,5 +1,4 @@
 <?php
-
 namespace exface\FileSystemConnector;
 
 use exface\Core\CommonLogic\Filemanager;

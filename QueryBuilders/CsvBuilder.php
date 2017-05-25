@@ -1,5 +1,4 @@
 <?php
-
 namespace exface\FileSystemConnector\QueryBuilders;
 
 use exface\Core\CommonLogic\QueryBuilder\AbstractQueryBuilder;

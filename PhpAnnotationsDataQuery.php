@@ -1,5 +1,4 @@
 <?php
-
 namespace exface\FileSystemConnector;
 
 use Wingu\OctopusCore\Reflection\ReflectionClass;

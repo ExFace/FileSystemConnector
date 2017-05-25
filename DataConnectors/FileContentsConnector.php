@@ -1,5 +1,4 @@
 <?php
-
 namespace exface\FileSystemConnector\DataConnectors;
 
 use exface\FileSystemConnector\FileContentsDataQuery;
@@ -25,15 +24,11 @@ class FileContentsConnector extends TransparentConnector
         $base_path = $this->getBasePath();
         
         if (is_null($base_path)) {
-            $base_path = $this->getWorkbench()
-                ->filemanager()
-                ->getPathToBaseFolder();
+            $base_path = $this->getWorkbench()->filemanager()->getPathToBaseFolder();
         }
         
         if (Filemanager::pathIsAbsolute($this->getBasePath())) {
-            $base_path = Filemanager::pathJoin($this->getWorkbench()
-                ->filemanager()
-                ->getPathToBaseFolder(), $this->getBasePath());
+            $base_path = Filemanager::pathJoin($this->getWorkbench()->filemanager()->getPathToBaseFolder(), $this->getBasePath());
         }
         
         $this->setBasePath($base_path);

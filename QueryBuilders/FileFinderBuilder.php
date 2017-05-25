@@ -1,5 +1,4 @@
 <?php
-
 namespace exface\FileSystemConnector\QueryBuilders;
 
 use exface\Core\CommonLogic\QueryBuilder\AbstractQueryBuilder;
@@ -32,9 +31,7 @@ class FileFinderBuilder extends AbstractQueryBuilder
         
         // Look for filters, that can be processed by the connector itself
         foreach ($this->getFilters()->getFilters() as $qpart) {
-            if ($qpart->getAttribute()->getId() == $this->getMainObject()
-                ->getUidAttribute()
-                ->getId()) {
+            if ($qpart->getAttribute()->getId() == $this->getMainObject()->getUidAttribute()->getId()) {
                 switch ($qpart->getComparator()) {
                     case EXF_COMPARATOR_IS:
                     case EXF_COMPARATOR_EQUALS:
@@ -51,9 +48,7 @@ class FileFinderBuilder extends AbstractQueryBuilder
                         $qpart->setApplyAfterReading(true);
                         $query->setFullScanRequired(true);
                 }
-            } elseif ($qpart->getAttribute()->getId() == $this->getMainObject()
-                ->getLabelAttribute()
-                ->getId()) {
+            } elseif ($qpart->getAttribute()->getId() == $this->getMainObject()->getLabelAttribute()->getId()) {
                 switch ($qpart->getComparator()) {
                     case EXF_COMPARATOR_IS:
                         $filename = '/.*' . preg_quote($qpart->getCompareValue()) . './i';

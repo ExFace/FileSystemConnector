@@ -1,5 +1,4 @@
 <?php
-
 namespace exface\FileSystemConnector\QueryBuilders;
 
 use exface\Core\CommonLogic\QueryBuilder\AbstractQueryBuilder;
@@ -31,8 +30,7 @@ class FileContentsBuilder extends AbstractQueryBuilder
     protected function buildQuery()
     {
         $query = new FileContentsDataQuery();
-        $query->setPathRelative($this->replacePlaceholdersInPath($this->getMainObject()
-            ->getDataAddress()));
+        $query->setPathRelative($this->replacePlaceholdersInPath($this->getMainObject()->getDataAddress()));
         return $query;
     }
 
@@ -124,9 +122,7 @@ class FileContentsBuilder extends AbstractQueryBuilder
      */
     protected function replacePlaceholdersInPath($path)
     {
-        foreach ($this->getWorkbench()
-            ->utils()
-            ->findPlaceholdersInString($path) as $ph) {
+        foreach ($this->getWorkbench()->utils()->findPlaceholdersInString($path) as $ph) {
             if ($ph_filter = $this->getFilter($ph)) {
                 if (! is_null($ph_filter->getCompareValue())) {
                     $path = str_replace('[#' . $ph . '#]', $ph_filter->getCompareValue(), $path);
