@@ -1,5 +1,7 @@
-<?php namespace exface\FileSystemConnector;
-				
-class FileSystemConnectorApp extends \exface\Core\CommonLogic\AbstractApp {
-	
+<?php
+
+namespace exface\FileSystemConnector;
+
+class FileSystemConnectorApp extends \exface\Core\CommonLogic\AbstractApp
+{
 }	
