@@ -96,7 +96,7 @@ class FileFinderDataQuery extends AbstractDataQuery
 
     protected function dumpFinder(DebuggerInterface $debugger)
     {
-        return $debugger->printVariable($this);
+        return $debugger->printVariable($this, true, 5);
     }
 }
 ?>
