@@ -38,7 +38,7 @@ class FileFinderBuilder extends AbstractQueryBuilder
                         $path_pattern = Filemanager::pathNormalize($qpart->getCompareValue());
                         break;
                     case EXF_COMPARATOR_IN:
-                        $values = explode(EXF_LIST_SEPARATOR, $qpart->getCompareValue());
+                        $values = explode($qpart->getValueListDelimiter(), $qpart->getCompareValue());
                         if (count($values) === 1) {
                             $path_pattern = Filemanager::pathNormalize($values[0]);
                             break;
