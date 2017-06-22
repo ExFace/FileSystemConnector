@@ -85,6 +85,7 @@ class FileFinderDataQuery extends AbstractDataQuery
         $page = $debug_widget->getPage();
         $finder_tab = $debug_widget->createTab();
         $finder_tab->setCaption('Finder');
+        $finder_tab->setNumberOfColumns(1);
         /* @var $finder_widget \exface\Core\Widgets\Html */
         $finder_widget = WidgetFactory::create($page, 'Html', $finder_tab);
         $finder_widget->setValue($this->dumpFinder($debug_widget->getWorkbench()->getDebugger()));
