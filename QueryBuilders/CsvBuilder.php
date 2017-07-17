@@ -94,10 +94,10 @@ class CsvBuilder extends FileContentsBuilder
                 $row1,
                 $row2
             ));
-            if ($sorted[0] == $row1)
-                return 1;
+            if ($sorted[0] === $row1)
+                return -1;
             else
-                return - 1;
+                return 1;
         });
         
         $assocKeys = $this->getAssocKeys($colCount, $field_map);
