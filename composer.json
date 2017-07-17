@@ -26,5 +26,13 @@
             "model_md5": "ca4a68d638850d30d420372ffeb28c69",
             "model_timestamp": "2017-05-10 14:35:36"
         }
+    },
+    "autoload": {
+        "psr-4": { "exface\\FileSystemConnector": "" },
+        "exclude-from-classmap": [
+            "/Config/",
+            "/Translations/",
+            "/Model/"
+        ]
     }
 }
