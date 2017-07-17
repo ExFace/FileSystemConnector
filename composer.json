@@ -28,7 +28,7 @@
         }
     },
     "autoload": {
-        "psr-4": { "exface\\FileSystemConnector": "" },
+        "psr-4": { "exface\\FileSystemConnector\\": "" },
         "exclude-from-classmap": [
             "/Config/",
             "/Translations/",
