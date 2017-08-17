@@ -3,7 +3,7 @@ namespace exface\FileSystemConnector;
 
 use exface\Core\CommonLogic\Filemanager;
 use Symfony\Component\Finder\Finder;
-use exface\Core\CommonLogic\AbstractDataQuery;
+use exface\Core\CommonLogic\DataQueries\AbstractDataQuery;
 use exface\Core\Widgets\DebugMessage;
 use exface\Core\Factories\WidgetFactory;
 use exface\Core\Interfaces\DebuggerInterface;
@@ -78,7 +78,7 @@ class FileFinderDataQuery extends AbstractDataQuery
      *
      * {@inheritdoc} The finder query creates a debug panel showing the dump of the symfony finder object.
      *              
-     * @see \exface\Core\CommonLogic\AbstractDataQuery::createDebugWidget()
+     * @see \exface\Core\CommonLogic\DataQueries\AbstractDataQuery::createDebugWidget()
      */
     public function createDebugWidget(DebugMessage $debug_widget)
     {

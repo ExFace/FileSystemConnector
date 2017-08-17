@@ -2,7 +2,7 @@
 namespace exface\FileSystemConnector;
 
 use exface\Core\CommonLogic\Filemanager;
-use exface\Core\CommonLogic\AbstractDataQuery;
+use exface\Core\CommonLogic\DataQueries\AbstractDataQuery;
 
 class FileContentsDataQuery extends AbstractDataQuery
 {
